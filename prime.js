@@ -1,5 +1,5 @@
-function assert(bool, message) {
-    if (!bool) {
+function assert(condition, message) {
+    if (!condition) {
         console.log(message);
         
         return;
