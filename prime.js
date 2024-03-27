@@ -1,7 +1,9 @@
 function assert(bool, message) {
     if (!bool) {
         console.log(message);
+        
         return;
+       
     }
 }
 
@@ -15,12 +17,13 @@ function isprime(num) {
     if (num > 1) {
         for (let i = 2; i <= Math.sqrt(num); i++) {
             if (num % i === 0) {
-                assert(false, `The given number is not a prime number`);
-                return;
+                return false;
             }
         }
-        return assert(false, `The given number is a prime number`);
+        return true;
     } 
 }
 
-isprime(9);
+assert(isprime(9)===true,"The given  number is not prime number");
+assert(isprime(11)===false,"The given  number is prime number");
+isprime(4.2)
