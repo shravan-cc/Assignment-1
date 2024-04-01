@@ -1,29 +1,60 @@
 function assert(bool, message) {
     if (!bool) {
         console.log(message);
-        
         return;
-       
     }
 }
 
 function isprime(num) {
-    //Pre-Conditions
-    assert(num > 0, `The given parameter must be a positive number`);
-    assert(Number.isInteger(num), `The given parameter ${num} must be an integer`);
-    assert(typeof num === 'number', `The given parameter ${num} must be a number`);
-    assert(num !== 0 || num !== 1, `The given parameter is neither prime nor composite`);
+    // Pre-Conditions
+    assert(typeof num === "number", "Argument must be a number");
+    assert(num > 1, "Argument must be greater than 1");
+    assert(Number.isInteger(num), "Argument must be an integer");
 
-    if (num > 1) {
-        for (let i = 2; i <= Math.sqrt(num); i++) {
-            if (num % i === 0) {
-                return false;
-            }
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
         }
-        return true;
-    } 
+    }
+    return true;
 }
 
-assert(isprime(9)===true,"The given  number is not prime number");
-assert(isprime(11)===false,"The given  number is prime number");
-isprime(4.2)
+assert(isprime(9) === false, "9 is not a prime number");
+assert(isprime(11) === true, "11 is a prime number");
+isprime(4.2);
+
+function generatePrimeSeries(count) {
+    let i = 2;
+    let cnt = 0;
+    let array = [];
+
+    assert(count > 0, "Argument must be a positive integer");
+    assert(Number.isInteger(count), "Argument must be an integer");
+
+    while (cnt !== count) {
+        if (isprime(i)) {
+            cnt++;
+            array.push(i);
+        }
+        i++;
+    }
+    return array;
+}
+
+assert.deepEqual(
+    generatePrimeSeries(5),
+    [2, 3, 5, 7, 11],
+    "The first series should be generated correctly"
+);
+assert.deepEqual(
+    generatePrimeSeries(6),
+    [2, 3, 5, 7, 11, 13],
+    "The first series should be generated correctly"
+);
+assert.deepStrictEqual(
+    generatePrimeSeries(10),
+    [2, 3, 5, 7, 11, 13, 17, 19, 23, 29],
+    "Generated prime series for count 10 is incorrect"
+);
+
+console.log("All tests passed successfully!");

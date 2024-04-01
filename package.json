@@ -5,8 +5,8 @@
   "main": "prime.js",
   "type": "module",
   "scripts": {
-    "run-fib": "nodemon ./fib.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run-fib": "nodemon ./fib.js"
   },
   "keywords": [
     "primenumber"
