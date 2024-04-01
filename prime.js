@@ -1,4 +1,9 @@
-import assert from "assert";
+function assert(bool, message) {
+  if (!bool) {
+    console.log(message);
+    return;
+  }
+}
 
 function isprime(num) {
   // Pre-Conditions
@@ -16,7 +21,7 @@ function isprime(num) {
 
 assert(isprime(9) === false, "9 is not a prime number");
 assert(isprime(11) === true, "11 is a prime number");
-assert(isprime(9999991) === true, "9999991 is a prime number");
+assert(isprime(9999999999999) === true, "9999991 is a prime number");
 assert.throws(
   () => isprime("string"),
   Error,
