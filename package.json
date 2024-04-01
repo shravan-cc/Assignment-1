@@ -5,7 +5,8 @@
   "main": "prime.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run-fib": "nodemon ./fib.js"
   },
   "keywords": [
     "primenumber"
@@ -15,5 +16,8 @@
   "dependencies": {
     "@inquirer/prompts": "^4.3.0",
     "prettier": "^3.2.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
