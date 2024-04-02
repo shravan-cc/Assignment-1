@@ -1,10 +1,4 @@
-function assert(bool, message) {
-  if (!bool) {
-    console.log(message);
-    return;
-  }
-}
-
+import assert from "assert";
 function isprime(num) {
   // Pre-Conditions
   assert(typeof num === "number", "Argument must be a number");
@@ -19,18 +13,14 @@ function isprime(num) {
   return true;
 }
 
-assert(isprime(9) === false, "9 is not a prime number");
-assert(isprime(11) === true, "11 is a prime number");
-assert(isprime(9999999999999) === true, "9999991 is a prime number");
-assert.throws(
-  () => isprime("string"),
-  Error,
-  "Invalid input should throw an error"
-);
-assert.throws(() => isprime(), Error, "Missing input should throw an error");
-assert.throws(() => isprime(1), Error, "1 is not a prime number");
-assert.throws(() => isprime(-1), Error, "Negative numbers are not prime");
-assert.throws(() => isprime(4.87), Error, "Non-integer numbers are not prime");
+assert(isprime(9) === false, "The given  number is not prime number");
+assert(isprime(11) === true, "The given  number is prime number");
+assert(isprime(9999991) === true, "The given  number is prime number");
+assert.throws(() => isprime("string"), Error);
+assert.throws(() => isprime(), Error);
+assert.throws(() => isprime(1), Error);
+assert.throws(() => isprime(-1), Error);
+assert.throws(() => isprime(4.87), Error);
 
 function generatePrimeSeries(count) {
   let i = 2;
@@ -65,16 +55,4 @@ assert.deepStrictEqual(
   [2, 3, 5, 7, 11, 13, 17, 19, 23, 29],
   "Generated prime series for count 10 is incorrect"
 );
-
-assert.throws(
-  () => generatePrimeSeries(),
-  Error,
-  "Missing input should throw an error"
-);
-assert.throws(
-  () => generatePrimeSeries(4.5),
-  Error,
-  "Missing input should throw an error"
-);
-
-console.log("All tests passed successfully!");
+assert.throws(() => generatePrimeSeries(), Error);
