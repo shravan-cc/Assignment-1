@@ -1,5 +1,5 @@
 import assert from "assert";
-function isprime(num) {
+export function isPrime(num) {
   // Pre-Conditions
   assert(typeof num === "number", "Argument must be a number");
   assert(num > 1, "Argument must be greater than 1");
@@ -13,16 +13,16 @@ function isprime(num) {
   return true;
 }
 
-assert(isprime(9) === false, "The given  number is not prime number");
-assert(isprime(11) === true, "The given  number is prime number");
-assert(isprime(9999991) === true, "The given  number is prime number");
-assert.throws(() => isprime("string"), Error);
-assert.throws(() => isprime(), Error);
-assert.throws(() => isprime(1), Error);
-assert.throws(() => isprime(-1), Error);
-assert.throws(() => isprime(4.87), Error);
+assert(isPrime(9) === false, "The given  number is not prime number");
+assert(isPrime(11) === true, "The given  number is prime number");
+assert(isPrime(9999991) === true, "The given  number is prime number");
+assert.throws(() => isPrime("string"), Error);
+assert.throws(() => isPrime(), Error);
+assert.throws(() => isPrime(1), Error);
+assert.throws(() => isPrime(-1), Error);
+assert.throws(() => isPrime(4.87), Error);
 
-function generatePrimeSeries(count) {
+export function generatePrimeSeries(count) {
   let i = 2;
   let cnt = 0;
   let array = [];
@@ -31,7 +31,7 @@ function generatePrimeSeries(count) {
   assert(Number.isInteger(count), "Argument must be an integer");
 
   while (cnt !== count) {
-    if (isprime(i)) {
+    if (isPrime(i)) {
       cnt++;
       array.push(i);
     }
