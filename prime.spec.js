@@ -1,7 +1,10 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { expect, test } from "vitest";
-import assert from "assert";
+// eslint-disable-next-line import/no-duplicates
 import { isPrime } from "./prime";
+// eslint-disable-next-line import/no-duplicates
 import { generatePrimeSeries } from "./prime";
+
 test("isPrime tests", () => {
   expect(() => isPrime("string")).toThrow(Error);
   expect(() => isPrime()).toThrow(Error);

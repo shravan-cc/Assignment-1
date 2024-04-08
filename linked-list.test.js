@@ -1,6 +1,6 @@
-import { expect, test } from "vitest";
-import { createList } from "./linked-list";
+import { expect, describe, test, beforeEach, afterEach } from "vitest";
 import {
+  createList,
   addItemToList,
   arrayFromList,
   removeFromEnd,
@@ -8,106 +8,151 @@ import {
   insertBefore,
   removeItem,
   filterArray,
+  getNode,
 } from "./linked-list";
-test("Linked List tests", () => {
-  //Test creation of linked list
-  const listRef = createList();
-  expect(listRef).toBeDefined(); //expect(listRef).not.toBe(undefined);
-  expect(listRef.head).toBeNull();
 
-  //Test addition of items into the list
-  const listNode = addItemToList(listRef, 1);
-  expect(listNode).toBeDefined();
-  expect(listRef.head).toBe(listNode);
+describe("Structural Linked List tests", () => {
+  // create tests,adding items and removing items
+  let aListWithFewItems;
+  beforeEach(() => {
+    console.log("before each test block");
+    aListWithFewItems = createList();
+    addItemToList(aListWithFewItems, 1);
 
-  expect(listNode.data).toBe(1);
-  expect(listNode.next).toBe(null);
+    // Adding another item
 
-  //Adding another item
+    addItemToList(aListWithFewItems, 2);
 
-  const listNode2 = addItemToList(listRef, 2);
-  expect(listNode2.data).toBe(2);
-  expect(listNode2.next).toBe(null);
-  expect(listNode.next).toBe(listNode2);
+    // Implemented tail
 
-  expect(listRef.tail.data).toEqual(2); //Implemented tail
+    addItemToList(aListWithFewItems, { name: "shravan", age: 18 });
 
-  const listNode3 = addItemToList(listRef, { name: "shravan", age: 18 });
-  expect(listNode3.data).toEqual({ name: "shravan", age: 18 });
-  expect(listNode3.next).toBe(null);
-  expect(listNode2.next).toBe(listNode3);
+    addItemToList(aListWithFewItems, [0, 1, 2, 3]);
+  });
+  afterEach(() => {
+    console.log("After each test block this is called");
+    aListWithFewItems = null;
+  });
 
-  const listNode4 = addItemToList(listRef, [0, 1, 2, 3]);
-  expect(listNode4.data).toEqual([0, 1, 2, 3]);
-  expect(listNode4.next).toBe(null);
-  expect(listNode3.next).toBe(listNode4);
+  test("Creation tests", () => {
+    // Test creation of linked list
+    const listRef = createList();
+    expect(listRef).toBeDefined(); // expect(listRef).not.toBe(undefined);
+    expect(listRef.head).toBeNull();
+  });
 
-  //Lets test that list can give us a array representation
+  test("Adding items", () => {
+    // Test addition of items into the list
+    const listRef = createList();
+    const listNode = addItemToList(listRef, 1);
+    expect(listNode).toBeDefined();
+    expect(listRef.head).toBe(listNode);
 
-  let listAsArray = arrayFromList(listRef);
-  expect(listAsArray).toEqual([
-    1,
-    2,
-    { name: "shravan", age: 18 },
-    [0, 1, 2, 3],
-  ]);
+    expect(listNode.data).toBe(1);
+    expect(listNode.next).toBe(null);
 
-  //Implemented remove from end
-  removeFromEnd(listRef);
-  expect(listRef.tail.data).toEqual({ name: "shravan", age: 18 }); //Implemented tail
-  listAsArray = arrayFromList(listRef);
-  expect(listAsArray).toEqual([1, 2, { name: "shravan", age: 18 }]);
+    // Adding another item
 
-  //Implemented inserting node after a certain node in linked list
+    const listNode2 = addItemToList(listRef, 2);
+    expect(listNode2.data).toBe(2);
+    expect(listNode2.next).toBe(null);
+    expect(listNode.next).toBe(listNode2);
 
-  const listNode5 = insertAfter(listRef, listNode2, "shravan");
-  expect(listNode5.data).toEqual("shravan");
-  listAsArray = arrayFromList(listRef);
-  expect(listAsArray).toEqual([1, 2, "shravan", { name: "shravan", age: 18 }]);
+    expect(listRef.tail.data).toEqual(2); // Implemented tail
 
-  //Implemented inserting node before a certain node in linked list
+    const listNode3 = addItemToList(listRef, { name: "shravan", age: 18 });
+    expect(listNode3.data).toEqual({ name: "shravan", age: 18 });
+    expect(listNode3.next).toBe(null);
+    expect(listNode2.next).toBe(listNode3);
 
-  const listNodeBefore = insertBefore(listRef, listNode5, "Inserted Before");
-  expect(listNodeBefore.data).toEqual("Inserted Before");
-  expect(listNodeBefore.next).toBe(listNode5);
-  listAsArray = arrayFromList(listRef);
-  expect(listAsArray).toEqual([
-    1,
-    2,
-    "Inserted Before",
-    "shravan",
-    { name: "shravan", age: 18 },
-  ]);
+    const listNode4 = addItemToList(listRef, [0, 1, 2, 3]);
+    expect(listNode4.data).toEqual([0, 1, 2, 3]);
+    expect(listNode4.next).toBe(null);
+    expect(listNode3.next).toBe(listNode4);
+  });
 
-  //Implemented removing an item from a certain position
+  test("Transformation of items", () => {
+    // Lets test that list can give us a array representation
 
-  removeItem(listRef, "Inserted Before");
-  listAsArray = arrayFromList(listRef);
-  expect(listAsArray).toEqual([1, 2, "shravan", { name: "shravan", age: 18 }]);
+    let listAsArray = arrayFromList(aListWithFewItems);
+    expect(listAsArray).toEqual([
+      1,
+      2,
+      { name: "shravan", age: 18 },
+      [0, 1, 2, 3],
+    ]);
 
-  //Implemented list from an array
+    // Implemented remove from end
+    removeFromEnd(aListWithFewItems);
+    expect(aListWithFewItems.tail.data).toEqual({ name: "shravan", age: 18 }); // Implemented tail
+    listAsArray = arrayFromList(aListWithFewItems);
+    expect(listAsArray).toEqual([1, 2, { name: "shravan", age: 18 }]);
 
-  const listFromArray = createList([1, 2, 3]);
-  expect(listFromArray.head.data).toEqual(1);
-  expect(listFromArray.head.next.data).toEqual(2);
-  expect(listFromArray.tail.data).toEqual(3);
+    // Implemented inserting node after a certain node in linked list
+    const listNode2 = getNode(aListWithFewItems, 2);
+    const listNode5 = insertAfter(aListWithFewItems, listNode2, "shravan");
+    expect(listNode5.data).toEqual("shravan");
+    listAsArray = arrayFromList(aListWithFewItems);
+    expect(listAsArray).toEqual([
+      1,
+      2,
+      "shravan",
+      { name: "shravan", age: 18 },
+    ]);
 
-  //Implementing filter function
-  function isInteger(num) {
-    return Number.isInteger(num);
-  }
-  const filteredArray = filterArray(listRef, isInteger);
-  expect(filteredArray).toEqual([1, 2]);
+    // Implemented inserting node before a certain node in linked list
 
-  //Implementing creating list from list
-  const list2 = createList([2, 4, 6, 8]);
-  const listFromList = createList(list2);
-  expect(list2).toEqual(listFromList);
+    const listNodeBefore = insertBefore(
+      aListWithFewItems,
+      listNode5,
+      "Inserted Before"
+    );
+    expect(listNodeBefore.data).toEqual("Inserted Before");
+    expect(listNodeBefore.next).toBe(listNode5);
+    listAsArray = arrayFromList(aListWithFewItems);
+    expect(listAsArray).toEqual([
+      1,
+      2,
+      "Inserted Before",
+      "shravan",
+      { name: "shravan", age: 18 },
+    ]);
 
-  const list3 = createList([2, 4, 6, 8]);
-  const listFromList1 = createList(list3);
-  expect(list3).toEqual(listFromList1);
+    // Implemented removing an item from a certain position
+
+    removeItem(aListWithFewItems, "Inserted Before");
+    listAsArray = arrayFromList(aListWithFewItems);
+    expect(listAsArray).toEqual([
+      1,
+      2,
+      "shravan",
+      { name: "shravan", age: 18 },
+    ]);
+
+    // Implemented list from an array
+
+    const listFromArray = createList([1, 2, 3]);
+    expect(listFromArray.head.data).toEqual(1);
+    expect(listFromArray.head.next.data).toEqual(2);
+    expect(listFromArray.tail.data).toEqual(3);
+
+    // Implementing filter function
+    function isInteger(num) {
+      return Number.isInteger(num);
+    }
+    const filteredArray = filterArray(aListWithFewItems, isInteger);
+    expect(filteredArray).toEqual([1, 2]);
+
+    // Implementing creating list from list
+    const list2 = createList([2, 4, 6, 8]);
+    const listFromList = createList(list2);
+    expect(list2).toEqual(listFromList);
+
+    const list3 = createList([2, 4, 6, 8]);
+    const listFromList1 = createList(list3);
+    expect(list3).toEqual(listFromList1);
+  });
 });
 
-//insertAfter(listNode,data)
-//insertBefore(listNode,data)
+// insertAfter(listNode,data)
+// insertBefore(listNode,data)

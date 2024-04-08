@@ -1,16 +1,16 @@
-import assert from "assert";
-
+/* eslint-disable no-param-reassign */
 export function createList(arrayOrList = []) {
   if (Array.isArray(arrayOrList)) {
     if (arrayOrList.length === 0) {
       return { head: null, tail: null };
     }
 
-    let list1 = { head: null, tail: null };
+    const list1 = { head: null, tail: null };
     let lastNode = null;
 
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < arrayOrList.length; i++) {
-      let newNode = { data: arrayOrList[i], next: null };
+      const newNode = { data: arrayOrList[i], next: null };
 
       if (list1.head === null) {
         list1.head = newNode;
@@ -24,8 +24,9 @@ export function createList(arrayOrList = []) {
     }
 
     return list1;
-  } else if (arrayOrList && arrayOrList.head) {
-    let list = { head: null, tail: null };
+  }
+  if (arrayOrList && arrayOrList.head) {
+    const list = { head: null, tail: null };
     let currentListNode = arrayOrList.head;
 
     while (currentListNode) {
@@ -43,9 +44,8 @@ export function createList(arrayOrList = []) {
     }
 
     return list;
-  } else {
-    return { head: null, tail: null };
   }
+  return { head: null, tail: null };
 }
 
 /**
@@ -53,8 +53,8 @@ export function createList(arrayOrList = []) {
  */
 
 export function addItemToList(listRef, data) {
-  //assert(listRef !== undefined && listRef !== null);
-  const newNode = { data: data, next: null };
+  // assert(listRef !== undefined && listRef !== null);
+  const newNode = { data, next: null };
   if (listRef.head === null) {
     listRef.head = newNode;
   } else {
@@ -82,20 +82,20 @@ export function arrayFromList(listRef) {
 export function removeFromEnd(listRef) {
   if (listRef.head === null) {
     return;
-  } else if (listRef.head.next === null) {
+  }
+  if (listRef.head.next === null) {
     listRef.head = null;
     listRef.tail = null;
     return;
-  } else {
-    let prevNode = null;
-    let lastNode = listRef.head;
-    while (lastNode.next !== null) {
-      prevNode = lastNode;
-      lastNode = lastNode.next;
-    }
-    prevNode.next = null;
-    listRef.tail = prevNode;
   }
+  let prevNode = null;
+  let lastNode = listRef.head;
+  while (lastNode.next !== null) {
+    prevNode = lastNode;
+    lastNode = lastNode.next;
+  }
+  prevNode.next = null;
+  listRef.tail = prevNode;
 }
 
 export function insertAfter(listRef, listNode, data) {
@@ -103,7 +103,7 @@ export function insertAfter(listRef, listNode, data) {
     return null;
   }
 
-  const newNode = { data: data, next: null };
+  const newNode = { data, next: null };
 
   let lastNode = listRef.head;
   while (lastNode !== null) {
@@ -122,7 +122,7 @@ export function insertBefore(listRef, listNode, data) {
   if (listRef.head === null || listNode === null) {
     return null;
   }
-  const newNode = { data: data, next: null };
+  const newNode = { data, next: null };
   let lastNode = listRef.head;
   while (lastNode !== null) {
     if (lastNode.next === listNode) {
@@ -135,29 +135,33 @@ export function insertBefore(listRef, listNode, data) {
   return null;
 }
 
+// eslint-disable-next-line consistent-return
 export function removeItem(listRef, data) {
   if (listRef.head === null || data === null) {
     return null;
-  } else if (listRef.head.next === null) {
+  }
+  if (listRef.head.next === null) {
     listRef.head = null;
+    // eslint-disable-next-line no-param-reassign
     listRef.tail = null;
+    // eslint-disable-next-line consistent-return
     return;
-  } else {
-    let prevNode = null;
-    let lastNode = listRef.head;
-    while (lastNode !== null) {
-      if (lastNode.data === data) {
-        prevNode.next = lastNode.next;
-        return;
-      }
-      prevNode = lastNode;
-      lastNode = lastNode.next;
+  }
+  let prevNode = null;
+  let lastNode = listRef.head;
+  while (lastNode !== null) {
+    if (lastNode.data === data) {
+      prevNode.next = lastNode.next;
+      // eslint-disable-next-line consistent-return
+      return;
     }
+    prevNode = lastNode;
+    lastNode = lastNode.next;
   }
 }
 
 export function filterArray(listRef, predicate) {
-  let array = [];
+  const array = [];
   let lastNode = listRef.head;
   while (lastNode !== null) {
     if (predicate(lastNode.data)) {
@@ -166,4 +170,18 @@ export function filterArray(listRef, predicate) {
     lastNode = lastNode.next;
   }
   return array;
+}
+
+export function getNode(listRef, data) {
+  if (listRef.head === null) {
+    return null;
+  }
+  let lastNode = listRef.head;
+  while (lastNode !== null) {
+    if (lastNode.data === data) {
+      return lastNode;
+    }
+    lastNode = lastNode.next;
+  }
+  return null;
 }

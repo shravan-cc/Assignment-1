@@ -1,7 +1,7 @@
 import assert from "assert";
 
 function fibonacci(index) {
-  //Pre-Conditions
+  // Pre-Conditions
   assert(index >= 0, "Argument must be greater than or equal to zero");
   assert(Number.isInteger(index), "Arguement must be an integer");
   assert(index < 102, "Arguement is too large");
@@ -14,6 +14,7 @@ function fibonacci(index) {
   let first = 0;
   let second = 1;
   let next;
+  // eslint-disable-next-line no-plusplus
   for (let i = 2; i <= index; i++) {
     next = first + second;
     first = second;

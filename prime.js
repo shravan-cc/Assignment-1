@@ -1,10 +1,12 @@
 import assert from "assert";
+
 export function isPrime(num) {
   // Pre-Conditions
   assert(typeof num === "number", "Argument must be a number");
   assert(num > 1, "Argument must be greater than 1");
   assert(Number.isInteger(num), "Argument must be an integer");
 
+  // eslint-disable-next-line no-plusplus
   for (let i = 2; i <= Math.sqrt(num); i++) {
     if (num % i === 0) {
       return false;
@@ -25,16 +27,18 @@ assert.throws(() => isPrime(4.87), Error);
 export function generatePrimeSeries(count) {
   let i = 2;
   let cnt = 0;
-  let array = [];
+  const array = [];
 
   assert(count > 0, "Argument must be a positive integer");
   assert(Number.isInteger(count), "Argument must be an integer");
 
   while (cnt !== count) {
     if (isPrime(i)) {
-      cnt++;
+      // eslint-disable-next-line no-plusplus
+      cnt += 1;
       array.push(i);
     }
+    // eslint-disable-next-line no-plusplus
     i++;
   }
   return array;
