@@ -1,16 +1,16 @@
 import assert from "assert";
 
-export function createList(array = []) {
-  if (Array.isArray(array)) {
-    if (array.length === 0) {
+export function createList(arrayOrList = []) {
+  if (Array.isArray(arrayOrList)) {
+    if (arrayOrList.length === 0) {
       return { head: null, tail: null };
     }
 
     let list1 = { head: null, tail: null };
     let lastNode = null;
 
-    for (let i = 0; i < array.length; i++) {
-      let newNode = { data: array[i], next: null };
+    for (let i = 0; i < arrayOrList.length; i++) {
+      let newNode = { data: arrayOrList[i], next: null };
 
       if (list1.head === null) {
         list1.head = newNode;
@@ -24,9 +24,9 @@ export function createList(array = []) {
     }
 
     return list1;
-  } else if (array && array.head) {
+  } else if (arrayOrList && arrayOrList.head) {
     let list = { head: null, tail: null };
-    let currentListNode = array.head;
+    let currentListNode = arrayOrList.head;
 
     while (currentListNode) {
       const newNode = { data: currentListNode.data, next: null };
