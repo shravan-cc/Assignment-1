@@ -19,5 +19,8 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  rules: {},
+  rules: {
+    "max-classes-per-file": "off",
+    "no-plusplus": "off",
+  },
 };
