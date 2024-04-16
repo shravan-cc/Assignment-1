@@ -22,5 +22,6 @@ module.exports = {
   rules: {
     "max-classes-per-file": "off",
     "no-plusplus": "off",
+    "import/prefer-default-export": "off",
   },
 };

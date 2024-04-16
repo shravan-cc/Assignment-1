@@ -1,5 +1,7 @@
-/* eslint-disable import/prefer-default-export */
-
+/**
+ * Creates a new Node instance with the given data.
+ * @param {*} data - The data to be stored in the node.
+ */
 class Node {
   constructor(data) {
     this.data = data;
@@ -7,20 +9,14 @@ class Node {
     this.right = null;
   }
 }
+
+/**
+ * Creates a new Tree instance with an empty root.
+ */
 export class Tree {
-  constructor() {
+  constructor(compareFunc) {
     this.root = null;
-  }
-
-  /**
-   * Initializes the binary search tree by setting the root node to null.
-   *
-   * @returns {null} - Always returns null.
-   */
-
-  createTree() {
-    this.root = null;
-    return null;
+    this.compareFunc = compareFunc;
   }
 
   /**
@@ -38,7 +34,7 @@ export class Tree {
     }
     let currentNode = this.root;
     while (true) {
-      if (newNode.data < currentNode.data) {
+      if (this.compareFunc(currentNode.data, newNode.data) === 1) {
         if (currentNode.left === null) {
           currentNode.left = newNode;
           return newNode;
@@ -178,7 +174,7 @@ export class Tree {
           }
           return currentNode.data;
         }
-      } else if (currentNode.data > data) {
+      } else if (this.compareFunc(currentNode.data, data) === 1) {
         parentNode = currentNode;
         currentNode = currentNode.left;
       } else {

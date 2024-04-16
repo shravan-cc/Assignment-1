@@ -9,7 +9,14 @@ describe("Objected Oriented Trees Tests", () => {
    * Set up before each test case.
    */
   beforeEach(() => {
-    binarySearchTree = new Tree();
+    const compareFunc = (a, b) => {
+      if (a === b) {
+        return 0;
+      }
+      return a > b ? 1 : -1;
+    };
+
+    binarySearchTree = new Tree(compareFunc);
     binarySearchTree.addItem(30);
     binarySearchTree.addItem(25);
     binarySearchTree.addItem(35);
@@ -17,7 +24,6 @@ describe("Objected Oriented Trees Tests", () => {
     binarySearchTree.addItem(12);
     binarySearchTree.addItem(29);
   });
-
   /**
    * Clean up after each test case.
    */
@@ -27,19 +33,17 @@ describe("Objected Oriented Trees Tests", () => {
   });
 
   /**
-   * Test case for the creation of trees.
-   */
-  test("Creation of trees", () => {
-    const treeRef = new Tree();
-    expect(treeRef.createTree()).toBeDefined();
-    expect(treeRef.root).toBeNull();
-  });
-
-  /**
    * Test case for adding nodes to the tree.
    */
   test("Addition of nodes to the tree", () => {
-    const treeRef = new Tree();
+    const compareFunc = (a, b) => {
+      if (a === b) {
+        return 0;
+      }
+      return a > b ? 1 : -1;
+    };
+
+    const treeRef = new Tree(compareFunc);
 
     const treeNode1 = treeRef.addItem(30);
     expect(treeNode1.data).toEqual(30);
