@@ -1,4 +1,4 @@
-let x = 10;
+/*let x = 10;
 describe("Closure tests", () => {
   test("A very simple closure", () => {
     let y = 10;
@@ -43,3 +43,13 @@ describe("Closure tests", () => {
     // which are closures - is known as higher order functions
   });
 });
+
+
+function foo() {
+  setTimeout(() => console.log("delayed"), 1000);
+  // global this specail pointer available
+  console.log(globalThis);
+  console.log(globalThis === global);
+}
+
+foo();*/
