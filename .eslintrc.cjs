@@ -3,7 +3,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: ["airbnb-base", "prettier", "'plugin:vitest-globals/recommended'"],
+  extends: ["airbnb-base", "prettier" /*'plugin:vitest-globals/recommended'"*/],
   overrides: [
     {
       env: {
@@ -22,5 +22,6 @@ module.exports = {
   rules: {
     "max-classes-per-file": "off",
     "no-plusplus": "off",
+    "import/prefer-default-export": "off",
   },
 };
