@@ -149,9 +149,9 @@ water 10`;
     ]);
   });
   /**
-   * Additional test case for Assignment Question-6.
+   * Tests the functionality of `addTenAndFilterDivisibleByFour` function.
    */
-  test("Additional Assignment Question-6", () => {
+  test("Add 10 to each number and filter out those divisible by 4", () => {
     const numberList = [34, 45, 2, 53, 84, 542, 31, 23];
     expect(addTenAndFilterDivisibleByFour(numberList)).toEqual([44, 12, 552]);
   });

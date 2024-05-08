@@ -59,7 +59,7 @@ export const updatePrices = (purchaseList) =>
     .map((item, index) => {
       if (index > 0) {
         const [fruit, price] = item.split(" ");
-        return `${fruit} ${parseInt(price, 10) + 10}`;
+        return `${fruit} ${Number(price) + 10}`;
       }
     })
     .join("\n");
