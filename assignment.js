@@ -180,18 +180,19 @@ export function secondLargestNumber() {
    * @param {number[]} numbers - Array of numbers.
    * @returns {number} The second largest number in the array.
    */
-  const findSecondLargestNumberUsingReduce = (numbers) => {
-    let max = 0;
-    return numbers.reduce((acc, el) => {
-      if (el > max) {
-        acc = max;
-        max = el;
-      } else if (el > acc) {
-        acc = el;
-      }
-      return acc;
-    }, 0);
-  };
+  const findSecondLargestNumberUsingReduce = (numbers) =>
+    numbers.reduce(
+      (acc, el) => {
+        if (el > acc.largest) {
+          acc.secondLargest = acc.largest;
+          acc.largest = el;
+        } else if (el > acc.secondLargest) {
+          acc.secondLargest = el;
+        }
+        return acc;
+      },
+      { largest: 0, secondLargest: 0 }
+    ).secondLargest;
   return {
     findSecondLargestNumber,
     findSecondLargestNumberUsingReduce,
