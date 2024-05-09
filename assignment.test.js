@@ -11,6 +11,10 @@ import {
   extractEmailAddresses,
   extractAges,
   filterFoodItems,
+  secondLargestNumber,
+  someChecker,
+  quoteAnalyzer,
+  employeeDataProcessor,
 } from "./assignment";
 
 describe("Assignments making use of map,filter and reduce", () => {
@@ -232,5 +236,230 @@ water 10`;
       "pizza:unsafe",
       "paneer masala:safe",
     ]);
+  });
+  /**
+   * Test case for finding the second largest number in an array using different methods.
+   */
+  test("Find the second largest number in an array using different methods", () => {
+    const numbers = [13, 4, 12, 7, 1];
+    const secondLargest = secondLargestNumber();
+    expect(secondLargest.findSecondLargestNumber(numbers)).toEqual(12);
+    expect(secondLargest.findSecondLargestNumberUsingReduce(numbers)).toEqual(
+      12
+    );
+  });
+  /**
+   * Test case for checking if some elements in an array satisfy a given condition using different methods.
+   */
+  test("Check if some items satisfy the predicate function", () => {
+    const items = [2, 5, 8, 10, 7];
+    const predicate = (num) => num % 2 === 0;
+    const someCheckerInstance = someChecker();
+    expect(someCheckerInstance.some(items, predicate)).toEqual(true);
+    expect(someCheckerInstance.someReduce(items, predicate)).toEqual(true);
+  });
+  /**
+   * Test case for analyzing quotes data.
+   */
+  test("Additional Assignment Question-13", () => {
+    const authors = [
+      {
+        text: "Genius is one percent inspiration and ninety-nine percent perspiration.",
+        author: "Thomas Edison",
+      },
+      {
+        text: "You can observe a lot just by watching.",
+        author: "Yogi Berra",
+      },
+      {
+        text: "To invent, you need a good imagination and a pile of junk",
+        author: "Thomas Edison",
+      },
+      {
+        text: "Difficulties increase the nearer we get to the goal.",
+        author: "Yogi Berra",
+      },
+      {
+        text: "Fate is in your hands and no one elses",
+        author: "Byron Pulsifer",
+      },
+      {
+        text: "Be the chief but never the lord.",
+        author: "Lao Tzu",
+      },
+      {
+        text: "Nothing happens unless first we dream.",
+        author: "Byron Pulsifer",
+      },
+      {
+        text: "Well begun is half done.",
+        author: "Aristotle",
+      },
+      {
+        text: "Life is a learning experience, only if you learn.",
+        author: "Yogi Berra",
+      },
+      {
+        text: "Self-complacency is fatal to progress.",
+        author: "Margaret Sangster",
+      },
+      {
+        text: "Peace comes from within. Do not seek it without.",
+        author: "Buddha",
+      },
+      {
+        text: "What you give is what you get.",
+        author: "Byron Pulsifer",
+      },
+      {
+        text: "We can only learn to love by loving.",
+        author: "Lao Tzu",
+      },
+      {
+        text: "Life is change. Growth is optional. Choose wisely.",
+        author: "Karen Clark",
+      },
+      {
+        text: "You'll see it when you believe it.",
+        author: "Buddha",
+      },
+    ];
+    const quoteAnalyzerInstance = quoteAnalyzer();
+    /* Expected grouped quotes */
+    expect(quoteAnalyzerInstance.groupQuotesByAuthor(authors)).toEqual({
+      "Thomas Edison": [
+        "Genius is one percent inspiration and ninety-nine percent perspiration.",
+        "To invent, you need a good imagination and a pile of junk",
+      ],
+      "Yogi Berra": [
+        "You can observe a lot just by watching.",
+        "Difficulties increase the nearer we get to the goal.",
+        "Life is a learning experience, only if you learn.",
+      ],
+      "Byron Pulsifer": [
+        "Fate is in your hands and no one elses",
+        "Nothing happens unless first we dream.",
+        "What you give is what you get.",
+      ],
+      "Lao Tzu": [
+        "Be the chief but never the lord.",
+        "We can only learn to love by loving.",
+      ],
+      Aristotle: ["Well begun is half done."],
+      "Margaret Sangster": ["Self-complacency is fatal to progress."],
+      Buddha: [
+        "Peace comes from within. Do not seek it without.",
+        "You'll see it when you believe it.",
+      ],
+      "Karen Clark": ["Life is change. Growth is optional. Choose wisely."],
+    });
+    /* Expected quotes containing the word "Life" */
+    expect(
+      quoteAnalyzerInstance.getQuotesContainingWord("Life", authors)
+    ).toEqual([
+      "Life is a learning experience, only if you learn.",
+      "Life is change. Growth is optional. Choose wisely.",
+    ]);
+    /* Expected extracted quotes */
+    expect(quoteAnalyzerInstance.extractQuotes(authors)).toEqual([
+      "Genius is one percent inspiration and ninety-nine percent perspiration.",
+      "You can observe a lot just by watching.",
+      "To invent, you need a good imagination and a pile of junk",
+      "Difficulties increase the nearer we get to the goal.",
+      "Fate is in your hands and no one elses",
+      "Be the chief but never the lord.",
+      "Nothing happens unless first we dream.",
+      "Well begun is half done.",
+      "Life is a learning experience, only if you learn.",
+      "Self-complacency is fatal to progress.",
+      "Peace comes from within. Do not seek it without.",
+      "What you give is what you get.",
+      "We can only learn to love by loving.",
+      "Life is change. Growth is optional. Choose wisely.",
+      "You'll see it when you believe it.",
+    ]);
+    /* Expected unique authors */
+    expect(quoteAnalyzerInstance.extractUniqueAuthors(authors)).toEqual([
+      "Thomas Edison",
+      "Yogi Berra",
+      "Byron Pulsifer",
+      "Lao Tzu",
+      "Aristotle",
+      "Margaret Sangster",
+      "Buddha",
+      "Karen Clark",
+    ]);
+  });
+  /**
+   * Test case for processing employee data.
+   */
+  test("Processing Employee Data", () => {
+    const employees = [
+      {
+        firstName: "Molly",
+        lastName: "Rojas",
+        age: 38,
+        email: "mollyrojas@plasmox.com",
+        salary: 3065,
+      },
+      {
+        firstName: "Marguerite",
+        lastName: "Santiago",
+        age: 27,
+        email: "margueritesantiago@plasmox.com",
+        salary: 2796,
+      },
+      {
+        firstName: "Evelyn",
+        lastName: "Oneil",
+        age: 26,
+        email: "evelynoneil@plasmox.com",
+        salary: 3947,
+      },
+      {
+        firstName: "Consuelo",
+        lastName: "Case",
+        age: 23,
+        email: "consuelocase@plasmox.com",
+        salary: 2819,
+      },
+      {
+        firstName: "Earline",
+        lastName: "Bush",
+        age: 29,
+        email: "earlinebush@plasmox.com",
+        salary: 3494,
+      },
+      {
+        firstName: "Sanford",
+        lastName: "Hurley",
+        age: 26,
+        email: "sanfordhurley@plasmox.com",
+        salary: 3068,
+      },
+      {
+        firstName: "Todd",
+        lastName: "Gomez",
+        age: 33,
+        email: "toddgomez@plasmox.com",
+        salary: 3906,
+      },
+    ];
+    const dataProcessor = employeeDataProcessor();
+    expect(dataProcessor.calculateTotalSalaryUnderAge30(employees)).toEqual(
+      16124
+    );
+    expect(dataProcessor.getFullNames(employees)).toEqual([
+      "Molly Rojas",
+      "Marguerite Santiago",
+      "Evelyn Oneil",
+      "Consuelo Case",
+      "Earline Bush",
+      "Sanford Hurley",
+      "Todd Gomez",
+    ]);
+    expect(dataProcessor.getEmailList(employees)).toEqual(
+      "mollyrojas@plasmox.com,margueritesantiago@plasmox.com,evelynoneil@plasmox.com,consuelocase@plasmox.com,earlinebush@plasmox.com,sanfordhurley@plasmox.com,toddgomez@plasmox.com"
+    );
   });
 });

@@ -153,3 +153,179 @@ export function filterFoodItems() {
     classifyFoodsBySugarContent,
   };
 }
+/**
+ * Function to find the second largest number in an array using different methods.
+ */
+export function secondLargestNumber() {
+  /**
+   * Finds the second largest number in an array using iterative approach.
+   * @param {number[]} numbers - Array of numbers.
+   * @returns {number} The second largest number in the array.
+   */
+  const findSecondLargestNumber = (numbers) => {
+    let max = 0;
+    let secondMax = 0;
+    numbers.forEach((number) => {
+      if (number > max) {
+        secondMax = max;
+        max = number;
+      } else if (number > secondMax) {
+        secondMax = number;
+      }
+    });
+    return secondMax;
+  };
+  /**
+   * Finds the second largest number in an array using reduce method.
+   * @param {number[]} numbers - Array of numbers.
+   * @returns {number} The second largest number in the array.
+   */
+  const findSecondLargestNumberUsingReduce = (numbers) =>
+    numbers.reduce(
+      (acc, el) => {
+        if (el > acc.largest) {
+          acc.secondLargest = acc.largest;
+          acc.largest = el;
+        } else if (el > acc.secondLargest) {
+          acc.secondLargest = el;
+        }
+        return acc;
+      },
+      { largest: 0, secondLargest: 0 }
+    ).secondLargest;
+  return {
+    findSecondLargestNumber,
+    findSecondLargestNumberUsingReduce,
+  };
+}
+/**
+ * Function to check if some elements in an array satisfy a given condition.
+ */
+export function someChecker() {
+  /**
+   * Checks if some elements in an array satisfy a given condition using iterative approach.
+   * @param {any[]} items - Array of items to be checked.
+   * @param {Function} predicate - Function that tests each element.
+   * @returns {boolean} True if at least one element satisfies the condition, otherwise false.
+   */
+  const some = (items, predicate) => {
+    for (let i = 0; i < items.length; i++) {
+      if (predicate(items[i])) {
+        return true;
+      }
+    }
+    return false;
+  };
+  /**
+   * Checks if some elements in an array satisfy a given condition using reduce method.
+   * @param {any[]} items - Array of items to be checked.
+   * @param {Function} predicate - Function that tests each element.
+   * @returns {boolean} True if at least one element satisfies the condition, otherwise false.
+   */
+  const someReduce = (items, predicate) =>
+    items.reduce((acc, el) => acc || predicate(el), false);
+  return {
+    some,
+    someReduce,
+  };
+}
+/**
+ * Function to analyze quotes data.
+ */
+export function quoteAnalyzer() {
+  /**
+   * Groups quotes by their authors.
+   * @param {Object[]} authors - Array of quote objects containing text and author information.
+   * @returns {Object} Object where keys are authors and values are arrays of their quotes.
+   */
+  const groupQuotesByAuthor = (authors) =>
+    authors.reduce((acc, el) => {
+      if (!acc[el.author]) {
+        acc[el.author] = [el.text];
+      } else {
+        acc[el.author].push(el.text);
+      }
+      return acc;
+    }, {});
+  /**
+   * Gets quotes containing a specific word.
+   * @param {string} word - Word to search for in the quotes.
+   * @param {Object[]} authors - Array of quote objects containing text and author information.
+   * @returns {string[]} Array of quotes containing the specified word.
+   */
+  const getQuotesContainingWord = (word, authors) =>
+    authors.reduce((acc, el) => {
+      if (el.text.includes(word)) {
+        acc.push(el.text);
+      }
+      return acc;
+    }, []);
+  /**
+   * Extracts quotes from quote objects.
+   * @param {Object[]} authors - Array of quote objects containing text and author information.
+   * @returns {string[]} Array of quotes extracted from the quote objects.
+   */
+  const extractQuotes = (authors) => authors.map((author) => `${author.text}`);
+  /**
+   * Extracts unique authors from quote objects.
+   * @param {Object[]} authors - Array of quote objects containing text and author information.
+   * @returns {string[]} Array of unique authors extracted from the quote objects.
+   */
+  const extractUniqueAuthors = (authors) =>
+    authors.reduce((acc, el) => {
+      if (!acc.includes(el.author)) {
+        acc.push(el.author);
+      }
+      return acc;
+    }, []);
+  return {
+    groupQuotesByAuthor,
+    getQuotesContainingWord,
+    extractQuotes,
+    extractUniqueAuthors,
+  };
+}
+
+/**
+ * Function to process employee data.
+ */
+export function employeeDataProcessor() {
+  /**
+   * Calculates the total salary of employees under the age of 30.
+   * @param {Object[]} employees - Array of employee objects containing information such as age and salary.
+   * @returns {number} Total salary of employees under the age of 30.
+   */
+  const calculateTotalSalaryUnderAge30 = (employees) =>
+    employees.reduce((acc, employee) => {
+      if (employee.age < 30) {
+        acc += employee.salary;
+      }
+      return acc;
+    }, 0);
+  /**
+   * Gets the full names of employees.
+   * @param {Object[]} employees - Array of employee objects containing first name and last name.
+   * @returns {string[]} Array of full names of employees.
+   */
+  const getFullNames = (employees) =>
+    employees.map((employee) => `${employee.firstName} ${employee.lastName}`);
+  /**
+   * Gets the list of emails of employees.
+   * @param {Object[]} employees - Array of employee objects containing email addresses.
+   * @returns {string} Comma-separated list of email addresses of employees.
+   */
+  const getEmailList = (employees) =>
+    employees.reduce((acc, employee, index) => {
+      if (index === 0) {
+        acc += `${employee.email}`;
+      } else {
+        acc += `,${employee.email}`;
+      }
+      return acc;
+    }, "");
+  return {
+    calculateTotalSalaryUnderAge30,
+    getFullNames,
+    getEmailList,
+  };
+}
