@@ -8,6 +8,9 @@ import {
   filterItemsWithoutUG,
   filterItemsByPrefixOrSuffix,
   addTenAndFilterDivisibleByFour,
+  extractEmailAddresses,
+  extractAges,
+  filterFoodItems,
 } from "./assignment";
 
 describe("Assignments making use of map,filter and reduce", () => {
@@ -154,5 +157,80 @@ water 10`;
   test("Add 10 to each number and filter out those divisible by 4", () => {
     const numberList = [34, 45, 2, 53, 84, 542, 31, 23];
     expect(addTenAndFilterDivisibleByFour(numberList)).toEqual([44, 12, 552]);
+  });
+  /**
+   * Test case for extracting valid email addresses from strings.
+   */
+  test("Extract valid email addresses from strings", () => {
+    const emailStrings = [
+      "34, brighten street, email: BS@sft.com",
+      "Behind hotel paragon, rode street, micHel@sun.it",
+      "ulef court, cown street, email:cown@street",
+      "CodeCraft",
+    ];
+    expect(extractEmailAddresses(emailStrings)).toEqual([
+      "BS@sft.com",
+      "micHel@sun.it",
+    ]);
+  });
+  /**
+   * Test case for extracting ages from a list of people.
+   */
+  test("Extract ages from list of people", () => {
+    const personList = [
+      {
+        name: "John",
+        age: 13,
+      },
+      {
+        name: "Mark",
+        age: 56,
+      },
+      {
+        name: "Rachel",
+        age: 45,
+      },
+      {
+        name: "Nate",
+        age: 67,
+      },
+      {
+        name: "Jeniffer",
+        age: 65,
+      },
+    ];
+    expect(extractAges(personList)).toEqual(["13", "56", "45", "67", "65"]);
+  });
+  /**
+   * Test case for for filtering out food items
+   */
+  test("Filter foods without sugar", () => {
+    const foodList = [
+      { idli: ["rice", "urad", "oil", "cashew", "water"] },
+      { chapathi: ["atta", "gluten", "water", "oil", "sugar"] },
+      { pizza: ["maida", "sugar", "oil", "chiili", "flakes", "sause"] },
+      { "paneer masala": ["paneer", "onion", "tomato", "garlic", "oil"] },
+    ];
+    /**
+     * Test case for filtering out food items without sugar.
+     */
+    const filterFoods = filterFoodItems();
+    expect(filterFoods.filterFoodsWithoutSugar(foodList)).toEqual([
+      "idli",
+      "paneer masala",
+    ]);
+    /**
+     * Test case for filtering out food items without Oil and Chili.
+     */
+    expect(filterFoods.filterFoodsWithChiliAndOil(foodList)).toEqual(["pizza"]);
+    /**
+     * Test case for classifying food items based on sugar content
+     */
+    expect(filterFoods.classifyFoodsBySugarContent(foodList)).toEqual([
+      "idli:safe",
+      "chapathi:unsafe",
+      "pizza:unsafe",
+      "paneer masala:safe",
+    ]);
   });
 });
