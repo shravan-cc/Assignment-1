@@ -87,3 +87,69 @@ export const filterItemsByPrefixOrSuffix = (itemList) =>
  */
 export const addTenAndFilterDivisibleByFour = (numberList) =>
   numberList.map((number) => number + 10).filter((number) => number % 4 === 0);
+
+/**
+ * Extracts email addresses from an array of strings containing email data.
+ * @param {string[]} emailStrings - Array of strings containing email data.
+ * @returns {string[]} Array of extracted email addresses.
+ */
+export const extractEmailAddresses = (emailStrings) =>
+  emailStrings.reduce((acc, el) => {
+    const emailMatch = el.match(/[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g);
+    if (emailMatch) {
+      acc.push(...emailMatch.map((email) => email.toLowerCase()));
+    }
+    return acc;
+  }, []);
+
+/**
+ * Extracts ages from a list of person objects.
+ * @param {Object[]} personList - Array of person objects containing age information.
+ * @returns {string[]} Array of ages extracted from the person objects.
+ */
+export const extractAges = (personList) =>
+  personList.map((item) => `${item.age}`);
+
+/*
+ * Function to filter out food items based on certain conditions
+ */
+export function filterFoodItems() {
+  /**
+   * Filters out foods without sugar.
+   * @param {Array} foodList - Array of food objects with ingredients.
+   * @returns {Array} - Array of food names without sugar.
+   */
+  const filterFoodsWithoutSugar = (foodList) =>
+    foodList
+      .filter((foodItem) => !Object.values(foodItem)[0].includes("sugar"))
+      .map((foodItem) => Object.keys(foodItem)[0]);
+  /**
+   * Filters out foods containing both chili and oil.
+   * @param {Array} foodList - Array of food objects with ingredients.
+   * @returns {Array} - Array of food names containing chili and oil.
+   */
+  const filterFoodsWithChiliAndOil = (foodList) =>
+    foodList
+      .filter(
+        (item) =>
+          Object.values(item)[0].includes("chiili") &&
+          Object.values(item)[0].includes("oil")
+      )
+      .map((item) => Object.keys(item)[0]);
+  /**
+   * Classifies foods as safe or unsafe based on the presence of sugar.
+   * @param {Array} foodList - Array of food objects with ingredients.
+   * @returns {Array} - Array of food names classified as safe or unsafe.
+   */
+  const classifyFoodsBySugarContent = (foodList) =>
+    foodList.map((foodItem) =>
+      Object.values(foodItem)[0].includes("sugar")
+        ? `${Object.keys(foodItem)[0]}:unsafe`
+        : `${Object.keys(foodItem)[0]}:safe`
+    );
+  return {
+    filterFoodsWithoutSugar,
+    filterFoodsWithChiliAndOil,
+    classifyFoodsBySugarContent,
+  };
+}
