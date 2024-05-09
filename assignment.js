@@ -94,12 +94,13 @@ export const addTenAndFilterDivisibleByFour = (numberList) =>
  * @returns {string[]} Array of extracted email addresses.
  */
 export const extractEmailAddresses = (emailStrings) =>
-  emailStrings
-    .map((email) => email.match(/[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g))
-    .filter((item) => item !== null)
-    .flatMap((matches) => matches) // Learnt this command from google as I was not able to convert it into lowercase because that could only
-    // be applied to strings and from this method i could perform the lowercase method
-    .filter((item) => item.toLowerCase());
+  emailStrings.reduce((acc, el) => {
+    const emailMatch = el.match(/[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g);
+    if (emailMatch) {
+      acc.push(...emailMatch.map((email) => email.toLowerCase()));
+    }
+    return acc;
+  }, []);
 
 /**
  * Extracts ages from a list of person objects.

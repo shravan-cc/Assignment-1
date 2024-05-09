@@ -169,8 +169,8 @@ water 10`;
       "CodeCraft",
     ];
     expect(extractEmailAddresses(emailStrings)).toEqual([
-      "BS@sft.com",
-      "micHel@sun.it",
+      "bs@sft.com",
+      "michel@sun.it",
     ]);
   });
   /**
