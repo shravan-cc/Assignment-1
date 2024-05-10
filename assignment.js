@@ -329,3 +329,205 @@ export function employeeDataProcessor() {
     getEmailList,
   };
 }
+
+/**
+ * Function to classify nutritional data.
+ */
+export function classifyNutrition() {
+  /**
+   * Extracts the dominant nutrition for each key from nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {Object} Object where keys are dominant nutrition keys and values are their corresponding types.
+   */
+  const extractDominantNutrition = (nutritionalData) => {
+    const dominantNutrition = nutritionalData.reduce((acc, item) => {
+      Object.keys(item.nutritions).forEach((key) => {
+        if (!acc[key] || acc[key].value < item.nutritions[key]) {
+          acc[key] = {
+            value: item.nutritions[key],
+            type: item.type,
+          };
+        }
+      });
+      return acc;
+    }, {});
+    const categorizedNutrition = {};
+    Object.keys(dominantNutrition).forEach((key) => {
+      categorizedNutrition[key] = dominantNutrition[key].type;
+    });
+    return categorizedNutrition;
+  };
+  /**
+   * Extracts unique nutrition keys from nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of unique nutrition keys.
+   */
+  const extractUniqueNutritionKeys = (nutritionalData) =>
+    nutritionalData.reduce((acc, item) => {
+      Object.keys(item.nutritions).forEach((key) => {
+        if (!acc.includes(key)) {
+          acc.push(key);
+        }
+      });
+      return acc;
+    }, []);
+  /**
+   * Extracts unique health conditions from nutritional data for fruit types.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of unique health conditions for fruit types.
+   */
+  const extractUniqueHealthConditionsByFruit = (nutritionalData) =>
+    nutritionalData.reduce((acc, item) => {
+      if (item.type === "fruit") {
+        if (!acc.includes(Object.values(item.treats))) {
+          acc.push(...Object.values(item.treats));
+        }
+      }
+      return acc;
+    }, []);
+  /**
+   * Extracts common health conditions for nut types.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of common health conditions for nut types.
+   */
+
+  const extractCommonHealthConditions = (nutritionalData) =>
+    nutritionalData.reduce((acc, el) => {
+      if (el.type === "nut") {
+        if (acc.length === 0) {
+          acc.push(...el.treats);
+        } else {
+          acc = acc.filter((item) => el.treats.includes(item));
+        }
+      }
+      return acc;
+    }, []);
+  /**
+   * Calculates the total nutrition value for each item in the nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {Object[]} Array of objects with added 'totalNutritions' property representing the total nutrition value.
+   */
+  const calculateTotalNutritions = (nutritionalData) =>
+    nutritionalData.map((item) => {
+      item.totalNutritions = Object.values(item.nutritions).reduce(
+        (acc, el) => {
+          acc += el;
+          return acc;
+        },
+        0
+      );
+      return item;
+    });
+  /**
+   * Calculates the total nutrition value for all items in the nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {number} Total nutrition value.
+   */
+  const calculateTotalNutritionValue = (nutritionalData) =>
+    nutritionalData.reduce((total, nutrition) => {
+      total += Object.values(nutrition.nutritions).reduce((acc, el) => {
+        acc += el;
+        return acc;
+      }, 0);
+      return total;
+    }, 0);
+  /**
+   * Finds foods that are beneficial for bone issues based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of food names beneficial for bone issues.
+   */
+  const findFoodsForBoneIssues = (nutritionalData) =>
+    nutritionalData.reduce((acc, item) => {
+      if (Object.values(item.treats).includes("bone issues")) {
+        acc.push(item.name);
+      }
+      return acc;
+    }, []);
+  /**
+   * Finds foods with the most nutrients based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of food names with the most nutrients.
+   */
+  const findFoodsWithMostNutrients = (nutritionalData) => {
+    const maxLength = nutritionalData.reduce((acc, item) => {
+      if (Object.values(item.nutritions).length >= acc) {
+        acc = Object.values(item.nutritions).length;
+      }
+      return acc;
+    }, 0);
+    return nutritionalData
+      .filter((item) => Object.values(item.nutritions).length === maxLength)
+      .map((item) => item.name);
+  };
+  /**
+   * Finds foods beneficial for migraine with high vitamin content based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of food names beneficial for migraine with high vitamin content.
+   */
+  const findFoodsForMigraineWithHighVitamins = (nutritionalData) =>
+    nutritionalData.reduce((acc, item) => {
+      if (item.treats.includes("migraine") && item.nutritions.vitamins >= 60) {
+        acc.push(item.name);
+      }
+      return acc;
+    }, []);
+  /**
+   * Finds foods with the lowest carbs based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of food names with the lowest carbs.
+   */
+  const findFoodsWithLowestCarbs = (nutritionalData) => {
+    const filteredNutritionalData = nutritionalData.filter(
+      (item) => item.nutritions.carbs
+    );
+    const minimumCarbs = filteredNutritionalData.reduce((acc, item) => {
+      if (item.nutritions.carbs < acc || acc === null) {
+        acc = item.nutritions.carbs;
+      }
+      return acc;
+    }, null);
+    return nutritionalData
+      .filter((item) => item.nutritions.carbs === minimumCarbs)
+      .map((item) => item.name);
+  };
+  /**
+   * Calculates the total protein intake from foods treating sugar-related issues based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {number} Total protein intake from foods treating sugar-related issues.
+   */
+  const calculateTotalProteinIntakeForSugarTreats = (nutritionalData) =>
+    nutritionalData
+      .filter((item) => item.type === "nut" && item.treats.includes("sugar"))
+      .reduce((acc, item) => {
+        acc += item.nutritions.protein;
+        return acc;
+      }, 0);
+  /**
+   * Calculates the total vitamin content excluding fruits with sugar based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {number} Total vitamin content excluding fruits with sugar.
+   */
+  const calculateTotalVitaminContentExcludingFruitsWithSugar = (
+    nutritionalData
+  ) =>
+    nutritionalData
+      .filter((item) => item.type !== "fruit" || !item.nutritions.sugar)
+      .reduce((acc, item) => {
+        acc += item.nutritions.vitamins;
+        return acc;
+      }, 0);
+  return {
+    extractDominantNutrition,
+    extractUniqueNutritionKeys,
+    extractUniqueHealthConditionsByFruit,
+    extractCommonHealthConditions,
+    calculateTotalNutritions,
+    calculateTotalNutritionValue,
+    findFoodsForBoneIssues,
+    findFoodsWithMostNutrients,
+    findFoodsForMigraineWithHighVitamins,
+    findFoodsWithLowestCarbs,
+    calculateTotalProteinIntakeForSugarTreats,
+    calculateTotalVitaminContentExcludingFruitsWithSugar,
+  };
+}
