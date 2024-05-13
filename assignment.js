@@ -61,6 +61,7 @@ export const updatePrices = (purchaseList) =>
         const [fruit, price] = item.split(" ");
         return `${fruit} ${Number(price) + 10}`;
       }
+      return undefined;
     })
     .join("\n");
 
@@ -296,12 +297,10 @@ export function employeeDataProcessor() {
    * @returns {number} Total salary of employees under the age of 30.
    */
   const calculateTotalSalaryUnderAge30 = (employees) =>
-    employees.reduce((acc, employee) => {
-      if (employee.age < 30) {
-        acc += employee.salary;
-      }
-      return acc;
-    }, 0);
+    employees.reduce(
+      (acc, employee) => (employee.age < 30 ? acc + employee.salary : acc),
+      0
+    );
   /**
    * Gets the full names of employees.
    * @param {Object[]} employees - Array of employee objects containing first name and last name.
@@ -315,14 +314,11 @@ export function employeeDataProcessor() {
    * @returns {string} Comma-separated list of email addresses of employees.
    */
   const getEmailList = (employees) =>
-    employees.reduce((acc, employee, index) => {
-      if (index === 0) {
-        acc += `${employee.email}`;
-      } else {
-        acc += `,${employee.email}`;
-      }
-      return acc;
-    }, "");
+    employees.reduce(
+      (acc, employee, index) =>
+        index === 0 ? `${employee.email}` : `${acc},${employee.email}`,
+      ""
+    );
   return {
     calculateTotalSalaryUnderAge30,
     getFullNames,
@@ -341,19 +337,21 @@ export function classifyNutrition() {
    */
   const extractDominantNutrition = (nutritionalData) => {
     const dominantNutrition = nutritionalData.reduce((acc, item) => {
-      Object.keys(item.nutritions).forEach((key) => {
+      Object.keys(item.nutritions).map((key) => {
         if (!acc[key] || acc[key].value < item.nutritions[key]) {
           acc[key] = {
             value: item.nutritions[key],
             type: item.type,
           };
         }
+        return undefined;
       });
       return acc;
     }, {});
     const categorizedNutrition = {};
-    Object.keys(dominantNutrition).forEach((key) => {
+    Object.keys(dominantNutrition).map((key) => {
       categorizedNutrition[key] = dominantNutrition[key].type;
+      return undefined;
     });
     return categorizedNutrition;
   };
@@ -364,24 +362,30 @@ export function classifyNutrition() {
    */
   const extractUniqueNutritionKeys = (nutritionalData) =>
     nutritionalData.reduce((acc, item) => {
-      Object.keys(item.nutritions).forEach((key) => {
-        if (!acc.includes(key)) {
-          acc.push(key);
-        }
-      });
-      return acc;
+      const filteredKeys = Object.keys(item.nutritions).filter(
+        (key) => !acc.includes(key)
+      );
+      return [...acc, ...filteredKeys];
     }, []);
   /**
    * Extracts unique health conditions from nutritional data for fruit types.
    * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
    * @returns {string[]} Array of unique health conditions for fruit types.
    */
-  const extractUniqueHealthConditionsByFruit = (nutritionalData) =>
+  /* const extractUniqueHealthConditionsByFruit = (nutritionalData) =>
     nutritionalData.reduce((acc, item) => {
       if (item.type === "fruit") {
         if (!acc.includes(Object.values(item.treats))) {
           acc.push(...Object.values(item.treats));
         }
+      }
+      return acc;
+    }, []); */
+  const extractUniqueHealthConditionsByFruit = (nutritionalData) =>
+    nutritionalData.reduce((acc, item) => {
+      if (item.type === "fruit") {
+        const filteredArray = item.treats.filter((key) => !acc.includes(key));
+        return [...acc, ...filteredArray];
       }
       return acc;
     }, []);
@@ -394,11 +398,9 @@ export function classifyNutrition() {
   const extractCommonHealthConditions = (nutritionalData) =>
     nutritionalData.reduce((acc, el) => {
       if (el.type === "nut") {
-        if (acc.length === 0) {
-          acc.push(...el.treats);
-        } else {
-          acc = acc.filter((item) => el.treats.includes(item));
-        }
+        return acc.length === 0
+          ? [...el.treats]
+          : acc.filter((item) => el.treats.includes(item));
       }
       return acc;
     }, []);
@@ -408,55 +410,54 @@ export function classifyNutrition() {
    * @returns {Object[]} Array of objects with added 'totalNutritions' property representing the total nutrition value.
    */
   const calculateTotalNutritions = (nutritionalData) =>
-    nutritionalData.map((item) => {
-      item.totalNutritions = Object.values(item.nutritions).reduce(
-        (acc, el) => {
-          acc += el;
-          return acc;
-        },
+    nutritionalData.map((item) => ({
+      ...item,
+      totalNutritions: Object.values(item.nutritions).reduce(
+        (acc, el) => acc + el,
+
         0
-      );
-      return item;
-    });
+      ),
+    }));
   /**
    * Calculates the total nutrition value for all items in the nutritional data.
    * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
    * @returns {number} Total nutrition value.
    */
   const calculateTotalNutritionValue = (nutritionalData) =>
-    nutritionalData.reduce((total, nutrition) => {
-      total += Object.values(nutrition.nutritions).reduce((acc, el) => {
-        acc += el;
-        return acc;
-      }, 0);
-      return total;
-    }, 0);
+    nutritionalData.reduce(
+      (total, nutrition) =>
+        total +
+        Object.values(nutrition.nutritions).reduce(
+          (acc, el) => acc + el,
+
+          0
+        ),
+      0
+    );
   /**
    * Finds foods that are beneficial for bone issues based on nutritional data.
    * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
    * @returns {string[]} Array of food names beneficial for bone issues.
    */
   const findFoodsForBoneIssues = (nutritionalData) =>
-    nutritionalData.reduce((acc, item) => {
-      if (Object.values(item.treats).includes("bone issues")) {
-        acc.push(item.name);
-      }
-      return acc;
-    }, []);
+    nutritionalData.reduce(
+      (acc, item) =>
+        Object.values(item.treats).includes("bone issues")
+          ? [...acc, item.name]
+          : acc,
+      []
+    );
   /**
    * Finds foods with the most nutrients based on nutritional data.
    * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
    * @returns {string[]} Array of food names with the most nutrients.
    */
   const findFoodsWithMostNutrients = (nutritionalData) => {
-    const maxLength = nutritionalData.reduce((acc, item) => {
-      if (Object.values(item.nutritions).length >= acc) {
-        acc = Object.values(item.nutritions).length;
-      }
-      return acc;
-    }, 0);
+    const maxNutrients = Math.max(
+      ...nutritionalData.map((item) => Object.keys(item.nutritions).length)
+    );
     return nutritionalData
-      .filter((item) => Object.values(item.nutritions).length === maxLength)
+      .filter((item) => Object.values(item.nutritions).length === maxNutrients)
       .map((item) => item.name);
   };
   /**
@@ -465,12 +466,14 @@ export function classifyNutrition() {
    * @returns {string[]} Array of food names beneficial for migraine with high vitamin content.
    */
   const findFoodsForMigraineWithHighVitamins = (nutritionalData) =>
-    nutritionalData.reduce((acc, item) => {
-      if (item.treats.includes("migraine") && item.nutritions.vitamins >= 60) {
-        acc.push(item.name);
-      }
-      return acc;
-    }, []);
+    nutritionalData.reduce(
+      (acc, item) =>
+        item.treats.includes("migraine") && item.nutritions.vitamins >= 60
+          ? [...acc, item.name]
+          : acc,
+
+      []
+    );
   /**
    * Finds foods with the lowest carbs based on nutritional data.
    * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
@@ -480,12 +483,9 @@ export function classifyNutrition() {
     const filteredNutritionalData = nutritionalData.filter(
       (item) => item.nutritions.carbs
     );
-    const minimumCarbs = filteredNutritionalData.reduce((acc, item) => {
-      if (item.nutritions.carbs < acc || acc === null) {
-        acc = item.nutritions.carbs;
-      }
-      return acc;
-    }, null);
+    const minimumCarbs = Math.min(
+      ...filteredNutritionalData.map((item) => item.nutritions.carbs)
+    );
     return nutritionalData
       .filter((item) => item.nutritions.carbs === minimumCarbs)
       .map((item) => item.name);
@@ -498,10 +498,11 @@ export function classifyNutrition() {
   const calculateTotalProteinIntakeForSugarTreats = (nutritionalData) =>
     nutritionalData
       .filter((item) => item.type === "nut" && item.treats.includes("sugar"))
-      .reduce((acc, item) => {
-        acc += item.nutritions.protein;
-        return acc;
-      }, 0);
+      .reduce(
+        (acc, item) => acc + item.nutritions.protein,
+
+        0
+      );
   /**
    * Calculates the total vitamin content excluding fruits with sugar based on nutritional data.
    * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
@@ -512,10 +513,11 @@ export function classifyNutrition() {
   ) =>
     nutritionalData
       .filter((item) => item.type !== "fruit" || !item.nutritions.sugar)
-      .reduce((acc, item) => {
-        acc += item.nutritions.vitamins;
-        return acc;
-      }, 0);
+      .reduce(
+        (acc, item) => acc + item.nutritions.vitamins,
+
+        0
+      );
   return {
     extractDominantNutrition,
     extractUniqueNutritionKeys,

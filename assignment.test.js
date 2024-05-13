@@ -555,7 +555,6 @@ water 10`;
       "skin issues",
       "sleep problems",
       "heart problems",
-      "skin issues",
       "bone issues",
       "migraine",
     ]);
