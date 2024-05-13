@@ -348,11 +348,14 @@ export function classifyNutrition() {
       });
       return acc;
     }, {});
-    const categorizedNutrition = {};
-    Object.keys(dominantNutrition).map((key) => {
-      categorizedNutrition[key] = dominantNutrition[key].type;
-      return undefined;
-    });
+    const categorizedNutrition = Object.keys(dominantNutrition).reduce(
+      (acc, key) => {
+        acc[key] = dominantNutrition[key].type;
+        return acc;
+      },
+      {}
+    );
+
     return categorizedNutrition;
   };
   /**
@@ -533,3 +536,33 @@ export function classifyNutrition() {
     calculateTotalVitaminContentExcludingFruitsWithSugar,
   };
 }
+
+const generateArray = (number) => {
+  const array = [];
+  for (let i = 1; i <= number; i++) {
+    array.push(i);
+  }
+  return array;
+};
+const generateObject = (generateArray) => {
+  const obj = {};
+  obj.odd = generateArray.filter((number) => number % 2 !== 0);
+  obj.even = generateArray.filter((number) => number % 2 === 0);
+  return obj;
+};
+
+const transformObject = (generateObject) => {
+  generateObject.odd = Object.values(generateObject.odd).reduce(
+    (acc, el) => acc + el,
+
+    0
+  );
+  generateObject.even = Object.values(generateObject.even).reduce(
+    (acc, el) => acc + el,
+
+    0
+  );
+  return generateObject;
+};
+
+console.log(transformObject(generateObject(generateArray(6))));
