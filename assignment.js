@@ -536,33 +536,64 @@ export function classifyNutrition() {
     calculateTotalVitaminContentExcludingFruitsWithSugar,
   };
 }
+export function numberTransformer() {
+  /**
+   * Generates an array of numbers from 1 to the specified number.
+   * @param {number} number - The number up to which the array will be generated.
+   * @returns {number[]} An array containing numbers from 1 to the specified number.
+   */
+  const generateArray = (number) => {
+    const array = [];
+    for (let i = 1; i <= number; i++) {
+      array.push(i);
+    }
+    return array;
+  };
+  /**
+   * Splits an array of numbers into objects containing odd and even numbers.
+   * @param {number[]} arrayOfNumbers - The array of numbers to split.
+   * @returns {{odd: number[], even: number[]}} An object with odd and even number arrays.
+   */
+  const splitNumbersIntoOddEvenObject = (arrayOfNumbers) => ({
+    odd: arrayOfNumbers.reduce(
+      (acc, number) => (number % 2 !== 0 ? [...acc, number] : acc),
+      []
+    ),
+    even: arrayOfNumbers.reduce(
+      (acc, number) => (number % 2 === 0 ? [...acc, number] : acc),
+      []
+    ),
+  });
+  /**
+   * Calculates the sum of odd and even numbers in an object containing odd and even number arrays.
+   * @param {{odd: number[], even: number[]}} numberObject - The object containing odd and even number arrays.
+   * @returns {{odd: number, even: number}} An object with the sum of odd and even numbers.
+   */
+  const calculateSumOfOddEvenNumbers = (numberObject) => ({
+    odd: Object.values(numberObject.odd).reduce(
+      (acc, number) => acc + number,
 
-const generateArray = (number) => {
-  const array = [];
-  for (let i = 1; i <= number; i++) {
-    array.push(i);
-  }
-  return array;
-};
-const generateObject = (generateArray) => {
-  const obj = {};
-  obj.odd = generateArray.filter((number) => number % 2 !== 0);
-  obj.even = generateArray.filter((number) => number % 2 === 0);
-  return obj;
-};
+      0
+    ),
+    even: Object.values(numberObject.even).reduce(
+      (acc, number) => acc + number,
 
-const transformObject = (generateObject) => {
-  generateObject.odd = Object.values(generateObject.odd).reduce(
-    (acc, el) => acc + el,
-
-    0
-  );
-  generateObject.even = Object.values(generateObject.even).reduce(
-    (acc, el) => acc + el,
-
-    0
-  );
-  return generateObject;
-};
-
-console.log(transformObject(generateObject(generateArray(6))));
+      0
+    ),
+  });
+  /**
+   * Composes multiple functions into a single function.
+   * @param {...Function} functions - Functions to compose.
+   * @returns {Function} A composed function.
+   */
+  const compose =
+    (...functions) =>
+    (arguements) =>
+      functions.reduceRight((acc, func) => func(acc), arguements);
+  return {
+    generateArray,
+    splitNumbersIntoOddEvenObject,
+    calculateSumOfOddEvenNumbers,
+    compose,
+  };
+}

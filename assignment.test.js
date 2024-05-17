@@ -16,6 +16,7 @@ import {
   quoteAnalyzer,
   employeeDataProcessor,
   classifyNutrition,
+  numberTransformer,
 } from "./assignment";
 
 describe("Assignments making use of map,filter and reduce", () => {
@@ -657,5 +658,18 @@ water 10`;
         nutritionalData
       )
     ).toEqual(249);
+  });
+  /**
+   * Test case for number transformer function
+   */
+  test("Number Transformer", () => {
+    const tranformer = numberTransformer();
+    expect(
+      tranformer.compose(
+        tranformer.calculateSumOfOddEvenNumbers,
+        tranformer.splitNumbersIntoOddEvenObject,
+        tranformer.generateArray
+      )(6)
+    ).toEqual({ odd: 9, even: 12 });
   });
 });
