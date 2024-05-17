@@ -15,6 +15,8 @@ import {
   someChecker,
   quoteAnalyzer,
   employeeDataProcessor,
+  classifyNutrition,
+  numberTransformer,
 } from "./assignment";
 
 describe("Assignments making use of map,filter and reduce", () => {
@@ -461,5 +463,213 @@ water 10`;
     expect(dataProcessor.getEmailList(employees)).toEqual(
       "mollyrojas@plasmox.com,margueritesantiago@plasmox.com,evelynoneil@plasmox.com,consuelocase@plasmox.com,earlinebush@plasmox.com,sanfordhurley@plasmox.com,toddgomez@plasmox.com"
     );
+  });
+  /**
+   * Test case for nutrition classification.
+   */
+  test("Nutrition classification", () => {
+    const nutritionalData = [
+      {
+        name: "Banana",
+        type: "fruit",
+        treats: [
+          "constipation",
+          "vitamin deficiency",
+          "skin issues",
+          "sleep problems",
+        ],
+        nutritions: {
+          protein: 8,
+          carbs: 40,
+          sugar: 30,
+          vitamins: 45,
+        },
+      },
+      {
+        name: "Badam",
+        type: "nut",
+        treats: ["bp", "protein deficiency", "skin issues", "sugar"],
+        nutritions: {
+          protein: 18,
+          carbs: 20,
+          sugar: 20,
+          vitamins: 65,
+        },
+      },
+      {
+        name: "Cashew",
+        type: "nut",
+        treats: ["bp", "protein deficiency", "skin issues", "bone issues"],
+        nutritions: {
+          protein: 22,
+          carbs: 22,
+          vitamins: 60,
+        },
+      },
+      {
+        name: "Wallnut",
+        type: "nut",
+        treats: ["bp", "protein deficiency", "skin issues", "bone issues"],
+        nutritions: {
+          protein: 33,
+          carbs: 26,
+          vitamins: 64,
+        },
+      },
+      {
+        name: "Apple",
+        type: "fruit",
+        treats: ["heart problems", "skin issues", "bone issues", "migraine"],
+        nutritions: {
+          protein: 22,
+          carbs: 22,
+          vitamins: 60,
+        },
+      },
+    ];
+    const nutritionClassifier = classifyNutrition();
+    /**
+     * Test case for finding out the most domination nutrition
+     */
+    expect(
+      nutritionClassifier.extractDominantNutrition(nutritionalData)
+    ).toEqual({
+      protein: "nut",
+      carbs: "fruit",
+      sugar: "fruit",
+      vitamins: "nut",
+    });
+    /**
+     * Test case for extracting unique nutritions
+     */
+    expect(
+      nutritionClassifier.extractUniqueNutritionKeys(nutritionalData)
+    ).toEqual(["protein", "carbs", "sugar", "vitamins"]);
+    /**
+     * Test case for extracting unique health conditions from fruits
+     */
+    expect(
+      nutritionClassifier.extractUniqueHealthConditionsByFruit(nutritionalData)
+    ).toEqual([
+      "constipation",
+      "vitamin deficiency",
+      "skin issues",
+      "sleep problems",
+      "heart problems",
+      "bone issues",
+      "migraine",
+    ]);
+    /**
+     * Test case for extracting common health conditions in nut
+     */
+    expect(
+      nutritionClassifier.extractCommonHealthConditions(nutritionalData)
+    ).toEqual(["bp", "protein deficiency", "skin issues"]);
+    /**
+     * Test case for calculating total nutrition value in particular fruit or not
+     */
+    expect(
+      nutritionClassifier.calculateTotalNutritions(nutritionalData)
+    ).toEqual([
+      {
+        name: "Banana",
+        type: "fruit",
+        treats: [
+          "constipation",
+          "vitamin deficiency",
+          "skin issues",
+          "sleep problems",
+        ],
+        nutritions: { protein: 8, carbs: 40, sugar: 30, vitamins: 45 },
+        totalNutritions: 123,
+      },
+      {
+        name: "Badam",
+        type: "nut",
+        treats: ["bp", "protein deficiency", "skin issues", "sugar"],
+        nutritions: { protein: 18, carbs: 20, sugar: 20, vitamins: 65 },
+        totalNutritions: 123,
+      },
+      {
+        name: "Cashew",
+        type: "nut",
+        treats: ["bp", "protein deficiency", "skin issues", "bone issues"],
+        nutritions: { protein: 22, carbs: 22, vitamins: 60 },
+        totalNutritions: 104,
+      },
+      {
+        name: "Wallnut",
+        type: "nut",
+        treats: ["bp", "protein deficiency", "skin issues", "bone issues"],
+        nutritions: { protein: 33, carbs: 26, vitamins: 64 },
+        totalNutritions: 123,
+      },
+      {
+        name: "Apple",
+        type: "fruit",
+        treats: ["heart problems", "skin issues", "bone issues", "migraine"],
+        nutritions: { protein: 22, carbs: 22, vitamins: 60 },
+        totalNutritions: 104,
+      },
+    ]);
+    /**
+     * Test case for calculating total nutrition values
+     */
+    expect(
+      nutritionClassifier.calculateTotalNutritionValue(nutritionalData)
+    ).toEqual(577);
+    /**
+     * Test case for finding the food for bone issues
+     */
+    expect(nutritionClassifier.findFoodsForBoneIssues(nutritionalData)).toEqual(
+      ["Cashew", "Wallnut", "Apple"]
+    );
+    /**
+     * Test case for finding the food which has greater number of nutritions
+     */
+    expect(
+      nutritionClassifier.findFoodsWithMostNutrients(nutritionalData)
+    ).toEqual(["Banana", "Badam"]);
+    /**
+     * Test case for finding the food which can treat migraine and has vitamin greater than or equal to 60
+     */
+    expect(
+      nutritionClassifier.findFoodsForMigraineWithHighVitamins(nutritionalData)
+    ).toEqual(["Apple"]);
+    /**
+     * Test case for finding the food which has the lowest carbs
+     */
+    expect(
+      nutritionClassifier.findFoodsWithLowestCarbs(nutritionalData)
+    ).toEqual(["Badam"]);
+    /**
+     * Test case for finding the protein intake of nuts that does not involve sugar
+     */
+    expect(
+      nutritionClassifier.calculateTotalProteinIntakeForSugarTreats(
+        nutritionalData
+      )
+    ).toEqual(18);
+    /**
+     * Test case for finding the vitamin intake of food in which any fruit does not contain sugar
+     */
+    expect(
+      nutritionClassifier.calculateTotalVitaminContentExcludingFruitsWithSugar(
+        nutritionalData
+      )
+    ).toEqual(249);
+  });
+  /**
+   * Test case for number transformer function
+   */
+  test("Number Transformer", () => {
+    const tranformer = numberTransformer();
+    expect(
+      tranformer.compose(
+        tranformer.calculateSumOfOddEvenNumbers,
+        tranformer.splitNumbersIntoOddEvenObject,
+        tranformer.generateArray
+      )(6)
+    ).toEqual({ odd: 9, even: 12 });
   });
 });

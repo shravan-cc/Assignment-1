@@ -61,6 +61,7 @@ export const updatePrices = (purchaseList) =>
         const [fruit, price] = item.split(" ");
         return `${fruit} ${Number(price) + 10}`;
       }
+      return undefined;
     })
     .join("\n");
 
@@ -296,12 +297,10 @@ export function employeeDataProcessor() {
    * @returns {number} Total salary of employees under the age of 30.
    */
   const calculateTotalSalaryUnderAge30 = (employees) =>
-    employees.reduce((acc, employee) => {
-      if (employee.age < 30) {
-        acc += employee.salary;
-      }
-      return acc;
-    }, 0);
+    employees.reduce(
+      (acc, employee) => (employee.age < 30 ? acc + employee.salary : acc),
+      0
+    );
   /**
    * Gets the full names of employees.
    * @param {Object[]} employees - Array of employee objects containing first name and last name.
@@ -315,17 +314,286 @@ export function employeeDataProcessor() {
    * @returns {string} Comma-separated list of email addresses of employees.
    */
   const getEmailList = (employees) =>
-    employees.reduce((acc, employee, index) => {
-      if (index === 0) {
-        acc += `${employee.email}`;
-      } else {
-        acc += `,${employee.email}`;
-      }
-      return acc;
-    }, "");
+    employees.reduce(
+      (acc, employee, index) =>
+        index === 0 ? `${employee.email}` : `${acc},${employee.email}`,
+      ""
+    );
   return {
     calculateTotalSalaryUnderAge30,
     getFullNames,
     getEmailList,
+  };
+}
+
+/**
+ * Function to classify nutritional data.
+ */
+export function classifyNutrition() {
+  /**
+   * Extracts the dominant nutrition for each key from nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {Object} Object where keys are dominant nutrition keys and values are their corresponding types.
+   */
+  const extractDominantNutrition = (nutritionalData) => {
+    const dominantNutrition = nutritionalData.reduce((acc, item) => {
+      Object.keys(item.nutritions).map((key) => {
+        if (!acc[key] || acc[key].value < item.nutritions[key]) {
+          acc[key] = {
+            value: item.nutritions[key],
+            type: item.type,
+          };
+        }
+        return undefined;
+      });
+      return acc;
+    }, {});
+    const categorizedNutrition = Object.keys(dominantNutrition).reduce(
+      (acc, key) => {
+        acc[key] = dominantNutrition[key].type;
+        return acc;
+      },
+      {}
+    );
+
+    return categorizedNutrition;
+  };
+  /**
+   * Extracts unique nutrition keys from nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of unique nutrition keys.
+   */
+  const extractUniqueNutritionKeys = (nutritionalData) =>
+    nutritionalData.reduce((acc, item) => {
+      const filteredKeys = Object.keys(item.nutritions).filter(
+        (key) => !acc.includes(key)
+      );
+      return [...acc, ...filteredKeys];
+    }, []);
+  /**
+   * Extracts unique health conditions from nutritional data for fruit types.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of unique health conditions for fruit types.
+   */
+  /* const extractUniqueHealthConditionsByFruit = (nutritionalData) =>
+    nutritionalData.reduce((acc, item) => {
+      if (item.type === "fruit") {
+        if (!acc.includes(Object.values(item.treats))) {
+          acc.push(...Object.values(item.treats));
+        }
+      }
+      return acc;
+    }, []); */
+  const extractUniqueHealthConditionsByFruit = (nutritionalData) =>
+    nutritionalData.reduce((acc, item) => {
+      if (item.type === "fruit") {
+        const filteredArray = item.treats.filter((key) => !acc.includes(key));
+        return [...acc, ...filteredArray];
+      }
+      return acc;
+    }, []);
+  /**
+   * Extracts common health conditions for nut types.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of common health conditions for nut types.
+   */
+
+  const extractCommonHealthConditions = (nutritionalData) =>
+    nutritionalData.reduce((acc, el) => {
+      if (el.type === "nut") {
+        return acc.length === 0
+          ? [...el.treats]
+          : acc.filter((item) => el.treats.includes(item));
+      }
+      return acc;
+    }, []);
+  /**
+   * Calculates the total nutrition value for each item in the nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {Object[]} Array of objects with added 'totalNutritions' property representing the total nutrition value.
+   */
+  const calculateTotalNutritions = (nutritionalData) =>
+    nutritionalData.map((item) => ({
+      ...item,
+      totalNutritions: Object.values(item.nutritions).reduce(
+        (acc, el) => acc + el,
+
+        0
+      ),
+    }));
+  /**
+   * Calculates the total nutrition value for all items in the nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {number} Total nutrition value.
+   */
+  const calculateTotalNutritionValue = (nutritionalData) =>
+    nutritionalData.reduce(
+      (total, nutrition) =>
+        total +
+        Object.values(nutrition.nutritions).reduce(
+          (acc, el) => acc + el,
+
+          0
+        ),
+      0
+    );
+  /**
+   * Finds foods that are beneficial for bone issues based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of food names beneficial for bone issues.
+   */
+  const findFoodsForBoneIssues = (nutritionalData) =>
+    nutritionalData.reduce(
+      (acc, item) =>
+        Object.values(item.treats).includes("bone issues")
+          ? [...acc, item.name]
+          : acc,
+      []
+    );
+  /**
+   * Finds foods with the most nutrients based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of food names with the most nutrients.
+   */
+  const findFoodsWithMostNutrients = (nutritionalData) => {
+    const maxNutrients = Math.max(
+      ...nutritionalData.map((item) => Object.keys(item.nutritions).length)
+    );
+    return nutritionalData
+      .filter((item) => Object.values(item.nutritions).length === maxNutrients)
+      .map((item) => item.name);
+  };
+  /**
+   * Finds foods beneficial for migraine with high vitamin content based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of food names beneficial for migraine with high vitamin content.
+   */
+  const findFoodsForMigraineWithHighVitamins = (nutritionalData) =>
+    nutritionalData.reduce(
+      (acc, item) =>
+        item.treats.includes("migraine") && item.nutritions.vitamins >= 60
+          ? [...acc, item.name]
+          : acc,
+
+      []
+    );
+  /**
+   * Finds foods with the lowest carbs based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {string[]} Array of food names with the lowest carbs.
+   */
+  const findFoodsWithLowestCarbs = (nutritionalData) => {
+    const filteredNutritionalData = nutritionalData.filter(
+      (item) => item.nutritions.carbs
+    );
+    const minimumCarbs = Math.min(
+      ...filteredNutritionalData.map((item) => item.nutritions.carbs)
+    );
+    return nutritionalData
+      .filter((item) => item.nutritions.carbs === minimumCarbs)
+      .map((item) => item.name);
+  };
+  /**
+   * Calculates the total protein intake from foods treating sugar-related issues based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {number} Total protein intake from foods treating sugar-related issues.
+   */
+  const calculateTotalProteinIntakeForSugarTreats = (nutritionalData) =>
+    nutritionalData
+      .filter((item) => item.type === "nut" && item.treats.includes("sugar"))
+      .reduce(
+        (acc, item) => acc + item.nutritions.protein,
+
+        0
+      );
+  /**
+   * Calculates the total vitamin content excluding fruits with sugar based on nutritional data.
+   * @param {Object[]} nutritionalData - Array of objects containing nutritional data.
+   * @returns {number} Total vitamin content excluding fruits with sugar.
+   */
+  const calculateTotalVitaminContentExcludingFruitsWithSugar = (
+    nutritionalData
+  ) =>
+    nutritionalData
+      .filter((item) => item.type !== "fruit" || !item.nutritions.sugar)
+      .reduce(
+        (acc, item) => acc + item.nutritions.vitamins,
+
+        0
+      );
+  return {
+    extractDominantNutrition,
+    extractUniqueNutritionKeys,
+    extractUniqueHealthConditionsByFruit,
+    extractCommonHealthConditions,
+    calculateTotalNutritions,
+    calculateTotalNutritionValue,
+    findFoodsForBoneIssues,
+    findFoodsWithMostNutrients,
+    findFoodsForMigraineWithHighVitamins,
+    findFoodsWithLowestCarbs,
+    calculateTotalProteinIntakeForSugarTreats,
+    calculateTotalVitaminContentExcludingFruitsWithSugar,
+  };
+}
+export function numberTransformer() {
+  /**
+   * Generates an array of numbers from 1 to the specified number.
+   * @param {number} number - The number up to which the array will be generated.
+   * @returns {number[]} An array containing numbers from 1 to the specified number.
+   */
+  const generateArray = (number) => {
+    const array = [];
+    for (let i = 1; i <= number; i++) {
+      array.push(i);
+    }
+    return array;
+  };
+  /**
+   * Splits an array of numbers into objects containing odd and even numbers.
+   * @param {number[]} arrayOfNumbers - The array of numbers to split.
+   * @returns {{odd: number[], even: number[]}} An object with odd and even number arrays.
+   */
+  const splitNumbersIntoOddEvenObject = (arrayOfNumbers) => ({
+    odd: arrayOfNumbers.reduce(
+      (acc, number) => (number % 2 !== 0 ? [...acc, number] : acc),
+      []
+    ),
+    even: arrayOfNumbers.reduce(
+      (acc, number) => (number % 2 === 0 ? [...acc, number] : acc),
+      []
+    ),
+  });
+  /**
+   * Calculates the sum of odd and even numbers in an object containing odd and even number arrays.
+   * @param {{odd: number[], even: number[]}} numberObject - The object containing odd and even number arrays.
+   * @returns {{odd: number, even: number}} An object with the sum of odd and even numbers.
+   */
+  const calculateSumOfOddEvenNumbers = (numberObject) => ({
+    odd: Object.values(numberObject.odd).reduce(
+      (acc, number) => acc + number,
+
+      0
+    ),
+    even: Object.values(numberObject.even).reduce(
+      (acc, number) => acc + number,
+
+      0
+    ),
+  });
+  /**
+   * Composes multiple functions into a single function.
+   * @param {...Function} functions - Functions to compose.
+   * @returns {Function} A composed function.
+   */
+  const compose =
+    (...functions) =>
+    (arguements) =>
+      functions.reduceRight((acc, func) => func(acc), arguements);
+  return {
+    generateArray,
+    splitNumbersIntoOddEvenObject,
+    calculateSumOfOddEvenNumbers,
+    compose,
   };
 }
