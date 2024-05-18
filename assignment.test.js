@@ -17,6 +17,8 @@ import {
   employeeDataProcessor,
   classifyNutrition,
   numberTransformer,
+  alphabetProcessor,
+  stringProcessor,
 } from "./assignment";
 
 describe("Assignments making use of map,filter and reduce", () => {
@@ -671,5 +673,55 @@ water 10`;
         tranformer.generateArray
       )(6)
     ).toEqual({ odd: 9, even: 12 });
+  });
+  /**
+   * Test case for alphabet processor function
+   */
+  test("Alphabet Transformer", () => {
+    const processor = alphabetProcessor();
+    expect(
+      processor.compose(
+        processor.categorizeAlphabets,
+        processor.generateAlphabets
+      )()
+    ).toEqual({
+      vowels: ["a", "e", "i", "o", "u"],
+      consonents: [
+        "b",
+        "c",
+        "d",
+        "f",
+        "g",
+        "h",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+      ],
+    });
+  });
+  /**
+   * Test case for string processing functions.
+   */
+  test("String Trimming test cases", () => {
+    const processor = stringProcessor();
+    expect(
+      processor.compose(
+        processor.singleSpace,
+        processor.trimTrailing,
+        processor.trimLeading
+      )("      This     is Assignment     question      19      ")
+    ).toEqual("This is Assignment question 19");
   });
 });
