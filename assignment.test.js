@@ -17,8 +17,12 @@ import {
   employeeDataProcessor,
   classifyNutrition,
   numberTransformer,
-  alphabetProcessor,
-  stringProcessor,
+  compose,
+  generateAlphabets,
+  categorizeAlphabets,
+  trimLeading,
+  trimTrailing,
+  singleSpace,
 } from "./assignment";
 
 describe("Assignments making use of map,filter and reduce", () => {
@@ -678,13 +682,7 @@ water 10`;
    * Test case for alphabet processor function
    */
   test("Alphabet Transformer", () => {
-    const processor = alphabetProcessor();
-    expect(
-      processor.compose(
-        processor.categorizeAlphabets,
-        processor.generateAlphabets
-      )()
-    ).toEqual({
+    expect(compose(categorizeAlphabets, generateAlphabets)()).toEqual({
       vowels: ["a", "e", "i", "o", "u"],
       consonents: [
         "b",
@@ -715,12 +713,11 @@ water 10`;
    * Test case for string processing functions.
    */
   test("String Trimming test cases", () => {
-    const processor = stringProcessor();
     expect(
-      processor.compose(
-        processor.singleSpace,
-        processor.trimTrailing,
-        processor.trimLeading
+      compose(
+        singleSpace,
+        trimTrailing,
+        trimLeading
       )("      This     is Assignment     question      19      ")
     ).toEqual("This is Assignment question 19");
   });

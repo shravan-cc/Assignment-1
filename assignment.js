@@ -536,6 +536,12 @@ export function classifyNutrition() {
     calculateTotalVitaminContentExcludingFruitsWithSugar,
   };
 }
+/**
+ * Composes multiple functions into a single function.
+ * @param {...Function} functions - Functions to compose.
+ * @returns {Function} A composed function.
+ */
+
 export function numberTransformer() {
   /**
    * Generates an array of numbers from 1 to the specified number.
@@ -598,88 +604,57 @@ export function numberTransformer() {
   };
 }
 /**
- * This module provides functions to generate and process alphabets.
+ * Generates an array of lowercase alphabets (a-z).
+ * @returns {string[]} Array of lowercase alphabets.
  */
-export function alphabetProcessor() {
-  /**
-   * Generates an array of lowercase alphabets (a-z).
-   * @returns {string[]} Array of lowercase alphabets.
-   */
-  const generateAlphabets = () => {
-    const alphabetArray = [];
-    for (let i = 97; i <= 122; i++) {
-      alphabetArray.push(String.fromCharCode(i));
-    }
-    return alphabetArray;
-  };
-  /**
-   * Categorizes the given array of alphabets into vowels and consonants.
-   * @param {string[]} arrayOfAlphabets Array of lowercase alphabets.
-   * @returns {{ vowels: string[], consonants: string[] }} Object containing arrays of vowels and consonants.
-   */
-  const categorizeAlphabets = (arrayOfAlphabets) => ({
-    vowels: arrayOfAlphabets.reduce(
-      (acc, alphabet) =>
-        "aeiou".includes(alphabet) ? [...acc, alphabet] : acc,
-      []
-    ),
-    consonents: arrayOfAlphabets.reduce(
-      (acc, alphabet) =>
-        !"aeiou".includes(alphabet) ? [...acc, alphabet] : acc,
-      []
-    ),
-  });
-  /**
-   * Composes multiple functions into a single function.
-   * @param {...Function} functions - Functions to compose.
-   * @returns {Function} A composed function.
-   */
-  const compose =
-    (...functions) =>
-    (arguements) =>
-      functions.reduceRight((acc, func) => func(acc), arguements);
-  return {
-    generateAlphabets,
-    categorizeAlphabets,
-    compose,
-  };
-}
+export const generateAlphabets = () => {
+  const alphabetArray = [];
+  for (let i = 97; i <= 122; i++) {
+    alphabetArray.push(String.fromCharCode(i));
+  }
+  return alphabetArray;
+};
 /**
- * A module for string processing utility functions.
- * @module stringProcessor
+ * Categorizes the given array of alphabets into vowels and consonants.
+ * @param {string[]} arrayOfAlphabets Array of lowercase alphabets.
+ * @returns {{ vowels: string[], consonants: string[] }} Object containing arrays of vowels and consonants.
  */
-export function stringProcessor() {
-  /**
-   * Removes leading whitespace characters from a string.
-   * @param {string} str - The input string.
-   * @returns {string} - The string with leading whitespace characters removed.
-   */
-  const trimLeading = (str) => str.replace(/^\s+/g, "");
-  /**
-   * Removes trailing whitespace characters from a string.
-   * @param {string} str - The input string.
-   * @returns {string} - The string with trailing whitespace characters removed.
-   */
-  const trimTrailing = (str) => str.replace(/\s+$/g, "");
-  /**
-   * Reduces multiple consecutive whitespace characters to a single space.
-   * @param {string} str - The input string.
-   * @returns {string} - The string with consecutive whitespace characters reduced to a single space.
-   */
-  const singleSpace = (str) => str.replace(/\s+/g, " ");
-  /**
-   * Composes multiple functions into a single function.
-   * @param {...Function} functions - Functions to compose.
-   * @returns {Function} A composed function.
-   */
-  const compose =
-    (...functions) =>
-    (arguements) =>
-      functions.reduceRight((acc, func) => func(acc), arguements);
-  return {
-    trimLeading,
-    trimTrailing,
-    singleSpace,
-    compose,
-  };
-}
+export const categorizeAlphabets = (arrayOfAlphabets) => ({
+  vowels: arrayOfAlphabets.reduce(
+    (acc, alphabet) => ("aeiou".includes(alphabet) ? [...acc, alphabet] : acc),
+    []
+  ),
+  consonents: arrayOfAlphabets.reduce(
+    (acc, alphabet) => (!"aeiou".includes(alphabet) ? [...acc, alphabet] : acc),
+    []
+  ),
+});
+
+/**
+ * Composes multiple functions into a single function.
+ * @param {...Function} functions - Functions to compose.
+ * @returns {Function} A composed function.
+ */
+export const compose =
+  (...functions) =>
+  (arguements) =>
+    functions.reduceRight((acc, func) => func(acc), arguements);
+
+/**
+ * Removes leading whitespace characters from a string.
+ * @param {string} str - The input string.
+ * @returns {string} - The string with leading whitespace characters removed.
+ */
+export const trimLeading = (str) => str.replace(/^\s+/g, "");
+/**
+ * Removes trailing whitespace characters from a string.
+ * @param {string} str - The input string.
+ * @returns {string} - The string with trailing whitespace characters removed.
+ */
+export const trimTrailing = (str) => str.replace(/\s+$/g, "");
+/**
+ * Reduces multiple consecutive whitespace characters to a single space.
+ * @param {string} str - The input string.
+ * @returns {string} - The string with consecutive whitespace characters reduced to a single space.
+ */
+export const singleSpace = (str) => str.replace(/\s+/g, " ");
