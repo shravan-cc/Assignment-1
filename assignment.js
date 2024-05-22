@@ -658,3 +658,29 @@ export const trimTrailing = (str) => str.replace(/\s+$/g, "");
  * @returns {string} - The string with consecutive whitespace characters reduced to a single space.
  */
 export const singleSpace = (str) => str.replace(/\s+/g, " ");
+
+/**
+ * Retrieves all unique actor names from the provided movie data.
+ * @param {Array} moviesdata - An array of movie objects containing cast information.
+ * @returns {Array} - An array containing all unique actor names.
+ */
+export const getAllActorNames = (moviesdata) =>
+  moviesdata.reduce((acc, movie) => {
+    const newActors = movie.cast.filter((actor) => !acc.includes(actor));
+    return [...acc, ...newActors];
+  }, []);
+/**
+ * Retrieves movie titles grouped by year from the provided movie data.
+ * Only three movie titles are stored per year.
+ * @param {Array} moviesdata - An array of movie objects containing title and year information.
+ * @returns {Object} - An object with years as keys and arrays of movie titles as values.
+ */
+export const getMovieTitlesByYear = (moviesdata) =>
+  moviesdata.reduce((acc, movie) => {
+    if (!acc[movie.year]) {
+      acc[movie.year] = [movie.title];
+    } else if (acc[movie.year].length !== 3) {
+      acc[movie.year].push(movie.title);
+    }
+    return acc;
+  }, {});

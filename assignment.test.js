@@ -1,4 +1,5 @@
 import { expect, describe, test } from "vitest";
+import fs from "fs";
 import {
   fibonacciSeriesAtIndices,
   convertTemperaturesToFahrenheit,
@@ -23,6 +24,8 @@ import {
   trimLeading,
   trimTrailing,
   singleSpace,
+  getMovieTitlesByYear,
+  getAllActorNames,
 } from "./assignment";
 
 describe("Assignments making use of map,filter and reduce", () => {
@@ -720,5 +723,24 @@ water 10`;
         trimLeading
       )("      This     is Assignment     question      19      ")
     ).toEqual("This is Assignment question 19");
+  });
+  /**
+   * Test case for manipulating movies data
+   */
+  test("Test for manipulation in movies data", () => {
+    // Read the JSON file
+    const rawData = fs.readFileSync("data/movies.json", "utf8");
+    // Parse the JSON data
+    const moviesData = JSON.parse(rawData);
+    // Test for getAllActorNames function
+    expect(Array.isArray(getAllActorNames(moviesData))).toBe(true);
+    expect(getAllActorNames(moviesData)).toContain("Matthew Macfadyen");
+    expect(getAllActorNames(moviesData)).toContain("Eugenio Derbez");
+
+    // Test for getMovieTitlesByYear function
+    expect(getMovieTitlesByYear(moviesData)).toEqual({
+      2017: ["The Book of Love", "Split", "xXx: Return of Xander Cage"],
+      2018: ["Insidious: The Last Key", "The Strange Ones", "Sweet Country"],
+    });
   });
 });
