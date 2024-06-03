@@ -5,6 +5,11 @@ import {
   sizeOfFileAtPathASync,
   getAllFilesSync,
   getAllFilesASync,
+  promisifiedStat,
+  promisifiedReaddir,
+  sizeOfFileAtPathASyncUsingPromise,
+  fetchPersonName,
+  fetchPersonNamesByIds,
 } from "./file-size";
 
 describe("Assignment questions test on asynchronous programming", () => {
@@ -88,5 +93,85 @@ describe("Assignment questions test on asynchronous programming", () => {
         ]);
       }
     );
+  });
+  /**
+   * Test case for implementing fs.stat and fs.readdir using promise
+   */
+  test("Test case for implementing fs.stat and fs.readdir using promise", () => {
+    /**
+     * Test case for asyncStat with a file path
+     */
+    promisifiedStat("/mnt/c/Users/shravantr/Desktop/filesize/hello.txt")
+      .then((stat) => {
+        expect(stat.size).toBe(5);
+      })
+      .catch((err) => {
+        expect(err).toBe(null);
+      });
+    /**
+     * Test case for asyncStat with a directory path
+     */
+    promisifiedReaddir("/mnt/c/Users/shravantr/Desktop/filesize")
+      .then((file) => {
+        expect(file).toEqual(["hello.txt", "ss.txt"]);
+      })
+      .catch((err) => {
+        expect(err).toBe(null);
+      });
+  });
+  /**
+   * Test case for getting size of file using Promise API
+   */
+  test("Test case for getting size of file using Promise API", () => {
+    /**
+     * Test case when there is single file
+     */
+    sizeOfFileAtPathASyncUsingPromise(
+      "/mnt/c/Users/shravantr/Desktop/filesize/hello.txt"
+    )
+      .then((size) => {
+        expect(size).toBe(5);
+      })
+      .catch((err) => {
+        expect(err).toBe(null);
+      });
+    /**
+     * Test case when there is directory
+     */
+    return sizeOfFileAtPathASyncUsingPromise(
+      "/mnt/c/Users/shravantr/Desktop/filesize"
+    )
+      .then((size) => {
+        expect(size).toBe(7);
+      })
+      .catch((err) => {
+        expect(err).toBe(null);
+      });
+  });
+  /**
+   * Test case to fetch person with specific id
+   */
+  test("Test case to fetch person with specific id", async () => {
+    try {
+      const specificPerson = await fetchPersonName(3);
+      expect(specificPerson).toEqual("R2-D2");
+    } catch (err) {
+      expect(err).toBe(null);
+    }
+  });
+  /**
+   * Test case to fetch person names sequentially
+   */
+  test("Test case to fetch person names sequentially", async () => {
+    try {
+      const sequentialPersonNames = await fetchPersonNamesByIds();
+      expect(sequentialPersonNames).toEqual([
+        "Luke Skywalker",
+        "C-3PO",
+        "R2-D2",
+      ]);
+    } catch (err) {
+      expect(err).toBe(null);
+    }
   });
 });
