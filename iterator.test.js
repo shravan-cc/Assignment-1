@@ -11,7 +11,7 @@ describe("Assignment questions test on iterators", () => {
    */
   test("Test for iterating through alphabets using while loop", () => {
     const iterator = alphabetIterator[Symbol.iterator]();
-    let expectedCharCode = 97;
+    let expectedCharCode = "a".codePointAt(0);
     while (true) {
       const alphabets = iterator.next();
       if (alphabets.done) {
@@ -25,7 +25,7 @@ describe("Assignment questions test on iterators", () => {
    * Test case for iterating through alphabets using a for...of loop.
    */
   test("Test for iterating through alphabets using for of", () => {
-    let expectedCharCode = 97;
+    let expectedCharCode = "a".codePointAt(0);
     for (const alphabets of alphabetIterator) {
       const expectedValue = String.fromCharCode(expectedCharCode++);
       expect(alphabets).toEqual(expectedValue);
