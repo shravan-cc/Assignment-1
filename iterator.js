@@ -40,10 +40,10 @@ function createNode(data) {
  *
  * @returns {Object} An iterable linked list object with methods `addItem` and an iterator.
  */
-export function linkedListIterator() {
+export function createLinkedList() {
+  let head = null;
+  let tail = null;
   return {
-    head: null,
-    tail: null,
     /**
      * Adds a new item to the linked list.
      *
@@ -51,12 +51,12 @@ export function linkedListIterator() {
      */
     addItem(data) {
       const newNode = createNode(data);
-      if (this.head === null) {
-        this.head = newNode;
-        this.tail = newNode;
+      if (head === null) {
+        head = newNode;
+        tail = newNode;
       } else {
-        this.tail.next = newNode;
-        this.tail = newNode;
+        tail.next = newNode;
+        tail = newNode;
       }
     },
     /**
@@ -65,7 +65,7 @@ export function linkedListIterator() {
      * @returns {Object} An iterator object for the linked list.
      */
     [Symbol.iterator]() {
-      let currentNode = this.head;
+      let currentNode = head;
       return {
         next() {
           if (currentNode !== null) {
@@ -77,6 +77,9 @@ export function linkedListIterator() {
         },
       };
     },
+    getHead() {
+      return head;
+    },
   };
 }
 /**
@@ -86,7 +89,7 @@ export function linkedListIterator() {
  * @returns {Generator} A generator that yields the data of each node in the linked list.
  */
 export function* linkedListGenerator(linkedList) {
-  let currentValue = linkedList.head;
+  let currentValue = linkedList.getHead();
   while (currentValue !== null) {
     yield currentValue.data;
     currentValue = currentValue.next;

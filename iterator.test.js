@@ -1,8 +1,8 @@
-import { beforEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 
 import {
   alphabetIterator,
-  linkedListIterator,
+  createLinkedList,
   linkedListGenerator,
 } from "./iterator";
 
@@ -78,8 +78,8 @@ describe("Includes Tests for assignments on generators", () => {
   /**
    * Setup before each test to initialize the linked list with sample data.
    */
-  beforEach(() => {
-    linkedList = linkedListIterator();
+  beforeEach(() => {
+    linkedList = createLinkedList();
     linkedList.addItem(2);
     linkedList.addItem(4);
     linkedList.addItem(6);
