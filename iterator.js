@@ -23,3 +23,75 @@ export const alphabetIterator = {
     };
   },
 };
+/**
+ * Creates a node for the linked list.
+ *
+ * @param {any} data - The data to be stored in the node.
+ * @returns {Object} A node object with `data` and `next` properties.
+ */
+function createNode(data) {
+  return {
+    data,
+    next: null,
+  };
+}
+/**
+ * Creates an iterable linked list with methods to add items and iterate through the list.
+ *
+ * @returns {Object} An iterable linked list object with methods `addItem` and an iterator.
+ */
+export function createLinkedList() {
+  let head = null;
+  let tail = null;
+  return {
+    /**
+     * Adds a new item to the linked list.
+     *
+     * @param {any} data - The data to be added to the linked list.
+     */
+    addItem(data) {
+      const newNode = createNode(data);
+      if (head === null) {
+        head = newNode;
+        tail = newNode;
+      } else {
+        tail.next = newNode;
+        tail = newNode;
+      }
+    },
+    /**
+     * Provides an iterator to iterate through the linked list.
+     *
+     * @returns {Object} An iterator object for the linked list.
+     */
+    [Symbol.iterator]() {
+      let currentNode = head;
+      return {
+        next() {
+          if (currentNode !== null) {
+            const value = currentNode.data;
+            currentNode = currentNode.next;
+            return { value, done: false };
+          }
+          return { value: undefined, done: true };
+        },
+      };
+    },
+    getHead() {
+      return head;
+    },
+  };
+}
+/**
+ * A generator function to iterate through a linked list.
+ *
+ * @param {Object} linkedList - The linked list object to iterate through.
+ * @returns {Generator} A generator that yields the data of each node in the linked list.
+ */
+export function* linkedListGenerator(linkedList) {
+  let currentValue = linkedList.getHead();
+  while (currentValue !== null) {
+    yield currentValue.data;
+    currentValue = currentValue.next;
+  }
+}
