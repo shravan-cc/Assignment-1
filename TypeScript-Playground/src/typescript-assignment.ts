@@ -287,20 +287,37 @@ export class LinkedList<T> {
 /**
  * Interface representing a basic file structure.
  */
-interface File {
+interface IFile {
   path: string;
   size: number;
   getSize(): number;
   getPath(): string;
 }
 
+class File implements IFile {
+  path: string;
+  size: number;
+
+  constructor(path: string, size: number) {
+    this.path = path;
+    this.size = size;
+  }
+
+  getSize(): number {
+    return this.size;
+  }
+
+  getPath(): string {
+    return this.path;
+  }
+}
 /**
  * Class representing a folder in a file system, implementing the File interface.
  */
-class Folder implements File {
+class Folder implements IFile {
   path: string;
   size: number;
-  contents: File[];
+  contents: IFile[];
   /**
    * Constructs a new Folder instance.
    * @param path - The path of the folder.
@@ -316,10 +333,7 @@ class Folder implements File {
    */
   getSize(): number {
     const totalSize = this.contents.reduce(
-      (acc, content) =>
-        content.path.includes(".")
-          ? acc + content.size
-          : acc + content.getSize(),
+      (acc, content) => acc + content.getSize(),
       0
     );
     return totalSize;
@@ -393,16 +407,7 @@ export class FileSystem {
       return undefined;
     }
 
-    const newFile: File = {
-      path: `${path}`,
-      size,
-      getSize: function () {
-        return this.size;
-      },
-      getPath: function () {
-        return this.path;
-      },
-    };
+    const newFile = new File(path, size);
 
     parentFolder.addFile(newFile);
     return newFile;
