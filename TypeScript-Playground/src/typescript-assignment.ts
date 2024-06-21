@@ -68,7 +68,7 @@ interface Expect {
  * @param value - The actual value to test against expected values.
  * @returns An expectation object with methods to assert equality and inequality.
  */
-export function vitestExpect(value: number): Expect {
+export function customExpect(value: number): Expect {
   return {
     /**
      * Asserts that the current value is strictly equal to the expected value.
@@ -281,5 +281,149 @@ export class LinkedList<T> {
       lastNode = lastNode.next;
     }
     return null;
+  }
+}
+
+/**
+ * Interface representing a basic file structure.
+ */
+interface File {
+  path: string;
+  size: number;
+  getSize(): number;
+  getPath(): string;
+}
+
+/**
+ * Class representing a folder in a file system, implementing the File interface.
+ */
+class Folder implements File {
+  path: string;
+  size: number;
+  contents: File[];
+  /**
+   * Constructs a new Folder instance.
+   * @param path - The path of the folder.
+   */
+  constructor(path: string) {
+    this.path = path;
+    this.size = 0;
+    this.contents = [];
+  }
+  /**
+   * Calculates and retrieves the total size of the folder, including all nested files and folders.
+   * @returns The total size of the folder.
+   */
+  getSize(): number {
+    const totalSize = this.contents.reduce(
+      (acc, content) =>
+        content.path.includes(".")
+          ? acc + content.size
+          : acc + content.getSize(),
+      0
+    );
+    return totalSize;
+  }
+  /**
+   * Retrieves the path of the folder.
+   * @returns The path of the folder.
+   */
+  getPath(): string {
+    return this.path;
+  }
+  /**
+   * Recursively searches for a subfolder within the folder structure based on the provided path.
+   * @param path - The path of the folder to find.
+   * @returns The found Folder object if found, undefined otherwise.
+   */
+  findFolder(path: string): Folder | undefined {
+    if (this.path === path) {
+      return this;
+    } else {
+      for (const content of this.contents) {
+        if (content instanceof Folder) {
+          const found = content.findFolder(path);
+          if (found) {
+            return found;
+          }
+        }
+      }
+    }
+    return undefined;
+  }
+  /**
+   * Adds a File object (file) to the folder's contents.
+   * @param file - The File object to add.
+   */
+  addFile(file: File): void {
+    this.contents.push(file);
+  }
+  /**
+   * Adds a Folder object (subfolder) to the folder's contents.
+   * @param folder - The Folder object to add.
+   */
+  addFolder(folder: Folder): void {
+    this.contents.push(folder);
+  }
+}
+/**
+ * Class representing a file system with a root folder and methods to manipulate files and folders within the system.
+ */
+export class FileSystem {
+  root: Folder;
+  /**
+   * Constructs a new FileSystem instance with a root folder.
+   */
+  constructor() {
+    this.root = new Folder("/");
+  }
+  /**
+   * Creates a new file at the specified path with the given size.
+   * @param path - The path where the file should be created.
+   * @param size - The size of the file in bytes.
+   * @returns The created File object if successful, undefined otherwise.
+   */
+  createFile(path: string, size: number): File | undefined {
+    const dividedPathNames = path.split("/");
+    const fileName = dividedPathNames.pop();
+    const parentFolderPath = dividedPathNames.join("/") || "/";
+
+    const parentFolder = this.root.findFolder(parentFolderPath);
+    if (!parentFolder || !fileName) {
+      return undefined;
+    }
+
+    const newFile: File = {
+      path: `${path}`,
+      size,
+      getSize: function () {
+        return this.size;
+      },
+      getPath: function () {
+        return this.path;
+      },
+    };
+
+    parentFolder.addFile(newFile);
+    return newFile;
+  }
+  /**
+   * Creates a new folder at the specified path.
+   * @param path - The path where the folder should be created.
+   * @returns The created Folder object if successful, undefined otherwise.
+   */
+  createFolder(path: string): Folder | undefined {
+    const dividedPathNames = path.split("/");
+    const folderName = dividedPathNames.pop();
+    const parentFolderPath = dividedPathNames.join("/") || "/";
+
+    const parentFolder = this.root.findFolder(parentFolderPath);
+    if (!parentFolder || !folderName) {
+      return undefined;
+    }
+
+    const newFolder = new Folder(path);
+    parentFolder.addFolder(newFolder);
+    return newFolder;
   }
 }

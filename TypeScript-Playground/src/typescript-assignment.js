@@ -57,7 +57,7 @@ export function reduce(array, reducer, initialValue) {
  * @param value - The actual value to test against expected values.
  * @returns An expectation object with methods to assert equality and inequality.
  */
-export function vitestExpect(value) {
+export function customExpect(value) {
     return {
         /**
          * Asserts that the current value is strictly equal to the expected value.
@@ -217,5 +217,93 @@ export class LinkedList {
             lastNode = lastNode.next;
         }
         return null;
+    }
+}
+class Folder {
+    path;
+    size;
+    contents;
+    constructor(path) {
+        this.path = path;
+        this.size = 0;
+        this.contents = [];
+    }
+    getSize() {
+        /*let totalSize = 0;
+        for (const content of this.contents) {
+          if (content.path.includes(".")) {
+            totalSize += content.size;
+          } else {
+            totalSize += content.getSize();
+          }
+        } */
+        const totalSize = this.contents.reduce((acc, content) => content.path.includes(".")
+            ? acc + content.size
+            : acc + content.getSize(), 0);
+        return totalSize;
+    }
+    getPath() {
+        return this.path;
+    }
+    findFolder(path) {
+        if (this.path === path) {
+            return this;
+        }
+        else {
+            for (const content of this.contents) {
+                if (content instanceof Folder) {
+                    const found = content.findFolder(path);
+                    if (found) {
+                        return found;
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
+    addFile(file) {
+        this.contents.push(file);
+    }
+    addFolder(folder) {
+        this.contents.push(folder);
+    }
+}
+export class FileSystem {
+    root;
+    constructor() {
+        this.root = new Folder("/");
+    }
+    createFile(path, size) {
+        const dividedPathNames = path.split("/");
+        const fileName = dividedPathNames.pop();
+        const parentFolderPath = dividedPathNames.join("/") || "/";
+        const parentFolder = this.root.findFolder(parentFolderPath);
+        if (!parentFolder || !fileName) {
+            return undefined;
+        }
+        const newFile = {
+            path: `${path}`,
+            size,
+            getSize: function () {
+                return this.size;
+            },
+            getPath: function () {
+                return this.path;
+            },
+        };
+        parentFolder.addFile(newFile);
+        return newFile;
+    }
+    createFolder(path) {
+        const dividedPathNames = path.split("/");
+        const folderName = dividedPathNames.pop();
+        const parentFolderPath = dividedPathNames.join("/") || "/";
+        const parentFolder = this.root.findFolder(parentFolderPath);
+        if (!parentFolder || !folderName) {
+            return undefined;
+        }
+        const newFolder = new Folder(path);
+        parentFolder.addFolder(newFolder);
+        return newFolder;
     }
 }

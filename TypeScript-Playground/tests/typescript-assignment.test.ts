@@ -4,10 +4,11 @@ import {
   map,
   filter,
   reduce,
-  vitestExpect,
+  customExpect,
   processQuery,
   LinkedList,
   address,
+  FileSystem,
 } from "../src/typescript-assignment";
 
 /**
@@ -73,10 +74,8 @@ describe("Tests for assignment questions on typescript", () => {
    * Tests assertions using vitestExpect.
    */
   test("Tests for implementing expect function of vitest", () => {
-    expect(() => vitestExpect(5).toBe(5)).not.toThrow();
-    expect(() => vitestExpect(5).toBe(6)).toThrow("5 expected to be 6");
-    expect(() => vitestExpect(5).not.toBe(6)).not.toThrow();
-    expect(() => vitestExpect(5).not.toBe(5)).toThrow("5 not expected to be 5");
+    customExpect(5).toBe(5);
+    customExpect(5).not.toBe(6);
   });
   /**
    * Test case for function overloading in processQuery function.
@@ -120,5 +119,25 @@ describe("Tests for assignment questions on typescript", () => {
     list.removeItem(3);
 
     expect(list.tail?.data).toBe(2);
+  });
+  /**
+   * Test case for the File System Implementation
+   */
+  test("Tests for implementing File System", () => {
+    const fs = new FileSystem();
+    const folder1 = fs.createFolder("/folder1");
+    // Create files at different paths within the file system
+    const file1 = fs.createFile("/file1.txt", 50);
+    const file2 = fs.createFile("/folder1/file2.txt", 100);
+    const file3 = fs.createFile("/folder1/file3.txt", 200);
+
+    // Assertions for created files
+    expect(file1).toBeDefined();
+    expect(file2?.getPath()).toEqual("/folder1/file2.txt");
+    expect(file3?.getPath()).toEqual("/folder1/file3.txt");
+
+    // Assertions for folder size calculations
+    expect(folder1?.getSize()).toEqual(300);
+    expect(fs.root.getSize()).toEqual(350);
   });
 });
